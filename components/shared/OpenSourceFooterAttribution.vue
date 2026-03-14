@@ -1,7 +1,7 @@
 <template>
   <div class="oss-attribution" aria-label="Open source attribution">
     <span>Powered by open source.</span>
-    <a href="https://github.com/zanghongtu2006" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a href="https://github.com/zanghongtu2006/JennaPress" target="_blank" rel="noopener noreferrer">GitHub</a>
     <span>·</span>
     <a href="https://www.zanghongtu.com" target="_blank" rel="noopener noreferrer">Company</a>
   </div>

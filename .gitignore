@@ -9,6 +9,3 @@ dist/
 .idea/
 .vscode/
 *.log
-*.lock
-package-lock.json
-yarn.lock
