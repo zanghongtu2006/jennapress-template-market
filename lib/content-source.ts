@@ -2,9 +2,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import matter from 'gray-matter'
 import MarkdownIt from 'markdown-it'
-import { validatePageContent, validatePostContent, validateSiteConfig } from '~/lib/schema'
-import { DEFAULT_LOCALE, prefixPathForLocale, type SupportedLocale } from '~/lib/i18n'
-import { ensureTemplateExists } from '~/server/utils/templates'
+import { validatePageContent, validatePostContent, validateSiteConfig } from './schema'
+import { DEFAULT_LOCALE, prefixPathForLocale, type SupportedLocale } from './i18n'
+import { ensureTemplateExists } from './templates'
 import type {
   Block,
   BlogCategory,
@@ -17,7 +17,7 @@ import type {
   PostSummary,
   RichTextBlock,
   SiteConfig
-} from '~/types'
+} from '../types'
 
 const md = new MarkdownIt({ html: true, linkify: true, typographer: true })
 

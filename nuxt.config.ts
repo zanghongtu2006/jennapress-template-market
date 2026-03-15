@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import matter from 'gray-matter'
 import { SECONDARY_LOCALES } from './lib/i18n'
+import { writeStaticContentDataModule } from './lib/generate-static-content'
 
 function readFrontMatter(filePath: string) {
   const raw = fs.readFileSync(filePath, 'utf-8')
@@ -97,66 +98,31 @@ function readBlogRoutes() {
   return Array.from(routes)
 }
 
-function readApiRoutes() {
-  const routes = new Set<string>(['/api/pages', '/api/posts', '/api/posts/categories'])
-  const pagesDir = path.resolve(process.cwd(), 'content/pages')
-  const postsDir = path.resolve(process.cwd(), 'content/posts')
 
-  const defaultPageRoutes = readPageRoutesForDir(pagesDir)
-  for (const route of defaultPageRoutes) {
-    const normalized = route === '/' ? '' : route.replace(/^\//, '')
-    if (normalized) {
-      routes.add(`/api/pages/${normalized}`)
-    }
+function readDefaultTheme() {
+  const sitePath = path.resolve(process.cwd(), 'content/site.md')
+  if (!fs.existsSync(sitePath)) {
+    return 'light'
   }
 
-  const defaultPostEntries = readPostEntriesForDir(postsDir)
-  for (const entry of defaultPostEntries) {
-    routes.add(`/api/posts/category/${entry.category}`)
-    routes.add(`/api/posts/${entry.category}/${entry.slug}`)
-  }
-
-  for (const locale of SECONDARY_LOCALES) {
-    routes.add(`/api/site/${locale}`)
-    routes.add(`/api/pages/${locale}`)
-    routes.add(`/api/posts/${locale}`)
-    routes.add(`/api/posts/${locale}/categories`)
-
-    const localizedPageRoutes = new Set(readPageRoutesForDir(path.join(pagesDir, locale)))
-    for (const route of defaultPageRoutes) {
-      const normalized = route === '/' ? '' : route.replace(/^\//, '')
-      if (normalized) {
-        routes.add(`/api/pages/${locale}/${normalized}`)
-      }
-    }
-    for (const route of localizedPageRoutes) {
-      const normalized = route === '/' ? '' : route.replace(/^\//, '')
-      if (normalized) {
-        routes.add(`/api/pages/${locale}/${normalized}`)
-      }
-    }
-
-    const mergedPosts = new Map<string, { slug: string, category: string }>()
-    for (const entry of defaultPostEntries) {
-      mergedPosts.set(entry.slug, entry)
-    }
-    for (const entry of readPostEntriesForDir(path.join(postsDir, locale))) {
-      mergedPosts.set(entry.slug, entry)
-    }
-    for (const entry of mergedPosts.values()) {
-      routes.add(`/api/posts/${locale}/category/${entry.category}`)
-      routes.add(`/api/posts/${locale}/${entry.category}/${entry.slug}`)
-    }
-  }
-
-  return Array.from(routes)
+  const data = readFrontMatter(sitePath)
+  const value = typeof data?.defaultTheme === 'string' ? data.defaultTheme.trim() : ''
+  return value || 'light'
 }
+
+const defaultTheme = readDefaultTheme()
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: true },
   css: ['~/assets/main.css'],
   hooks: {
+    'builder:watch'() {
+      writeStaticContentDataModule()
+    },
+    'ready'() {
+      writeStaticContentDataModule()
+    },
     'pages:extend'(pages) {
       const root = process.cwd()
       const localizedRoutes = [
@@ -196,6 +162,11 @@ export default defineNuxtConfig({
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' }
       ],
+      style: [
+        {
+          innerHTML: `html:not([data-theme]) body { visibility: hidden; }`
+        }
+      ],
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: 'favicon.svg' }
       ],
@@ -208,24 +179,16 @@ export default defineNuxtConfig({
     var defaultLocale = 'en'
     var secondaryLocales = ['de', 'zh']
     var baseURL = '/JennaPress/'
+    var defaultTheme = '${defaultTheme}'
 
     var applyTheme = function (value) {
       if (!value) return
       window.__SITE_THEME__ = value
       document.documentElement.dataset.theme = value
-
-      var syncFrame = function () {
-        var frame = document.querySelector('.template-saas-frame')
-        if (frame) frame.setAttribute('data-theme', value)
-      }
-
-      syncFrame()
-      document.addEventListener('DOMContentLoaded', syncFrame, { once: true })
-      requestAnimationFrame(syncFrame)
     }
 
     var savedTheme = localStorage.getItem(themeKey)
-    if (savedTheme) applyTheme(savedTheme)
+    applyTheme(savedTheme || defaultTheme)
 
     var savedLanguage = localStorage.getItem(languageKey)
     if (!savedLanguage) return
@@ -261,9 +224,10 @@ export default defineNuxtConfig({
   },
   ssr: true,
   nitro: {
+    preset: 'static',
     prerender: {
       autoSubfolderIndex: true,
-      routes: [...readPageRoutes(), ...readBlogRoutes(), ...readApiRoutes()]
+      routes: [...readPageRoutes(), ...readBlogRoutes()]
     }
   },
   runtimeConfig: {

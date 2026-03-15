@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { joinURL } from 'ufo'
 import type { PageContent } from '~/types'
 import { DEFAULT_LOCALE, isSecondaryLocale } from '~/lib/i18n'
+import { getStaticPage } from '~/lib/static-content'
 import TemplateRenderer from '~/components/layouts/TemplateRenderer.vue'
 import TemplateFrameRenderer from '~/components/layouts/TemplateFrameRenderer.vue'
 
-const baseURL = useRuntimeConfig().app.baseURL
 const route = useRoute()
 
 const locale = computed(() => {
@@ -23,18 +22,10 @@ const { data: siteData, error: siteError } = await useSite(locale)
 const site = computed(() => siteData.value)
 
 const key = computed(() => `page:${locale.value}:${slug.value}`)
-const pageUrl = computed(() => {
-  const normalized = slug.value.replace(/^\//, '')
-  if (locale.value === DEFAULT_LOCALE) {
-    return joinURL(baseURL, `api/pages/${normalized}`)
-  }
-  return joinURL(baseURL, `api/pages/${locale.value}/${normalized}`)
-})
-
-const { data: pageData, error: pageError } = await useAsyncData<PageContent>(
+const { data: pageData, error: pageError } = await useAsyncData<PageContent | null>(
   key,
-  () => $fetch(pageUrl.value),
-  { watch: [locale, slug] }
+  () => Promise.resolve(getStaticPage(slug.value, locale.value)),
+  { watch: [locale, slug] },
 )
 
 if (siteError.value) {
@@ -51,13 +42,13 @@ useSeoMeta({
   title: () => page.value.seo.title,
   description: () => page.value.seo.description,
   ogTitle: () => page.value.seo.title,
-  ogDescription: () => page.value.seo.description
+  ogDescription: () => page.value.seo.description,
 })
 
 useHead(() => ({
   link: page.value.seo.canonical
     ? [{ rel: 'canonical', href: page.value.seo.canonical }]
-    : []
+    : [],
 }))
 </script>
 

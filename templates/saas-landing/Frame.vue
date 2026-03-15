@@ -11,10 +11,12 @@ const { theme } = useTheme({
   themes: props.site.themes,
   defaultTheme: props.site.defaultTheme
 })
+
+const frameTheme = computed(() => theme.value)
 </script>
 
 <template>
-  <div class="template-saas-frame" :data-theme="theme">
+  <div class="template-saas-frame">
     <HeaderBar :site="site" />
     <StageSection>
       <slot />

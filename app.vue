@@ -6,7 +6,6 @@ const STORAGE_KEY = 'site-language'
 if (import.meta.client) {
   const route = useRoute()
   const router = useRouter()
-  const config = useRuntimeConfig()
 
   onMounted(async () => {
     try {
@@ -16,29 +15,16 @@ if (import.meta.client) {
       }
 
       const parsed = stripLocalePrefixFromPath(route.path)
-      const baseURL = (config.app.baseURL || '/').replace(/\/+$/, '') || ''
-      const normalizedPath = route.path.replace(/\/+$/, '') || '/'
-
-      const isBaseRoot =
-        normalizedPath === '/'
-        || normalizedPath === baseURL
-        || normalizedPath === `${baseURL}`
-
-      const isDefaultLocaleRoot =
-        parsed.locale === DEFAULT_LOCALE
-        && parsed.path === '/'
-        && isBaseRoot
-
-      if (!isDefaultLocaleRoot) {
+      if (parsed.locale !== DEFAULT_LOCALE) {
         return
       }
 
-      const targetPath = prefixPathForLocale('/', savedLanguage)
-      if (targetPath !== parsed.path && targetPath !== route.path) {
+      const targetPath = prefixPathForLocale(parsed.path, savedLanguage)
+      if (targetPath !== route.path) {
         await router.replace({
           path: targetPath,
           query: route.query,
-          hash: route.hash
+          hash: route.hash,
         })
       }
     } catch {

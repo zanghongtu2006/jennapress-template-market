@@ -22,73 +22,73 @@ function normalizeThemes(themes: string[] | undefined, defaultTheme: string) {
 }
 
 function applyThemeToDocument(value: string) {
-  if (!import.meta.client) {
-    return
-  }
-
+  if (!import.meta.client) return
   document.documentElement.dataset.theme = value
-
-  const frame = document.querySelector('.template-saas-frame')
-  if (frame) {
-    frame.setAttribute('data-theme', value)
-  }
 }
 
 export function useTheme(options: ThemeOptions = {}) {
-  const fallbackTheme = typeof options.defaultTheme === 'string' && options.defaultTheme.trim()
-    ? options.defaultTheme.trim()
-    : 'light'
+  const fallbackTheme =
+    typeof options.defaultTheme === 'string' && options.defaultTheme.trim()
+      ? options.defaultTheme.trim()
+      : 'light'
 
   const themes = computed(() => normalizeThemes(options.themes, fallbackTheme))
-  const defaultTheme = computed(() => themes.value.includes(fallbackTheme) ? fallbackTheme : themes.value[0])
+  const defaultTheme = computed(() =>
+    themes.value.includes(fallbackTheme) ? fallbackTheme : themes.value[0]
+  )
 
-  const themeState = useState<string>('site-theme', () => {
-    if (import.meta.client) {
-      const presetTheme = window.__SITE_THEME__
-      if (presetTheme && normalizeThemes(options.themes, fallbackTheme).includes(presetTheme)) {
-        return presetTheme
-      }
-    }
+  const themeState = useState<string>('site-theme', () => defaultTheme.value)
+  const clientHydrated = useState<boolean>('site-theme-client-hydrated', () => false)
 
-    return defaultTheme.value
-  })
-  const initialized = useState<boolean>('site-theme-initialized', () => false)
-  const watchBound = useState<boolean>('site-theme-watch-bound', () => false)
+  if (import.meta.client && !clientHydrated.value) {
+    const candidates = [
+      window.__SITE_THEME__,
+      document.documentElement.dataset.theme,
+      window.localStorage.getItem(STORAGE_KEY)
+    ]
 
-  if (import.meta.client && !initialized.value) {
-    const presetTheme = window.__SITE_THEME__
-    const savedTheme = window.localStorage.getItem(STORAGE_KEY)
-    const nextTheme = [presetTheme, savedTheme].find((value): value is string => !!value && themes.value.includes(value))
+    const nextTheme = candidates.find((value): value is string => {
+      return !!value && themes.value.includes(value)
+    })
 
     themeState.value = nextTheme || defaultTheme.value
     applyThemeToDocument(themeState.value)
-    initialized.value = true
+    window.__SITE_THEME__ = themeState.value
+    window.localStorage.setItem(STORAGE_KEY, themeState.value)
+    clientHydrated.value = true
   }
 
-  watch(themes, (currentThemes) => {
-    if (!currentThemes.includes(themeState.value)) {
-      themeState.value = defaultTheme.value
-    }
-  }, { immediate: true })
+  watch(
+    themes,
+    (currentThemes) => {
+      if (!currentThemes.includes(themeState.value)) {
+        themeState.value = defaultTheme.value
+      }
+    },
+    { immediate: true }
+  )
 
-  if (import.meta.client && !watchBound.value) {
-    watch(themeState, (value) => {
-      window.__SITE_THEME__ = value
-      window.localStorage.setItem(STORAGE_KEY, value)
-      applyThemeToDocument(value)
-    }, { immediate: true })
-    watchBound.value = true
-  }
-
-  function setTheme(nextTheme: string) {
-    if (themes.value.includes(nextTheme)) {
-      themeState.value = nextTheme
-    }
+  if (import.meta.client) {
+    watch(
+      themeState,
+      (value) => {
+        window.__SITE_THEME__ = value
+        window.localStorage.setItem(STORAGE_KEY, value)
+        applyThemeToDocument(value)
+      },
+      { immediate: true }
+    )
   }
 
   return {
-    theme: computed(() => themes.value.includes(themeState.value) ? themeState.value : defaultTheme.value),
+    theme: computed(() =>
+      themes.value.includes(themeState.value) ? themeState.value : defaultTheme.value
+    ),
     themes,
-    setTheme
+    setTheme(nextTheme: string) {
+      if (themes.value.includes(nextTheme)) {
+        themeState.value = nextTheme
+      }
+    }
   }
 }

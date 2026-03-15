@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { joinURL } from 'ufo'
 import type { BlogCategory, BlogPostSummary } from '~/types'
 import { DEFAULT_LOCALE, isSecondaryLocale } from '~/lib/i18n'
+import { getStaticBlogCategories, getStaticBlogCategoryPayload } from '~/lib/static-content'
 import TemplateFrameRenderer from '~/components/layouts/TemplateFrameRenderer.vue'
 import TemplateBlogRenderer from '~/components/layouts/TemplateBlogRenderer.vue'
 
-const baseURL = useRuntimeConfig().app.baseURL
 const route = useRoute()
 const category = computed(() => String(route.params.category || ''))
 const locale = computed(() => {
@@ -18,27 +17,21 @@ const site = computed(() => siteData.value)
 
 const categoriesKey = computed(() => `blog:${locale.value}:categories`)
 const categoryKey = computed(() => `blog:${locale.value}:category:${category.value}`)
-const categoriesUrl = computed(() => locale.value === DEFAULT_LOCALE
-  ? joinURL(baseURL, 'api/posts/categories')
-  : joinURL(baseURL, `api/posts/${locale.value}/categories`))
-const categoryUrl = computed(() => locale.value === DEFAULT_LOCALE
-  ? joinURL(baseURL, `api/posts/category/${category.value}`)
-  : joinURL(baseURL, `api/posts/${locale.value}/category/${category.value}`))
 
 const { data: categoriesData, error: categoriesError } = await useAsyncData<BlogCategory[]>(
   categoriesKey,
-  () => $fetch(categoriesUrl.value),
-  { watch: [locale] }
+  () => Promise.resolve(getStaticBlogCategories(locale.value)),
+  { watch: [locale] },
 )
-const { data: categoryData, error: categoryError } = await useAsyncData<{ category: BlogCategory, posts: BlogPostSummary[] }>(
+const { data: categoryData, error: categoryError } = await useAsyncData<{ category: BlogCategory, posts: BlogPostSummary[] } | null>(
   categoryKey,
-  () => $fetch(categoryUrl.value),
-  { watch: [locale, category] }
+  () => Promise.resolve(getStaticBlogCategoryPayload(category.value, locale.value)),
+  { watch: [locale, category] },
 )
 
 if (siteError.value) throw createError({ statusCode: 500, statusMessage: siteError.value.statusMessage || 'Failed to load site config' })
 if (categoriesError.value) throw createError({ statusCode: 500, statusMessage: categoriesError.value.statusMessage || 'Failed to load categories' })
-if (categoryError.value) throw createError({ statusCode: categoryError.value.statusCode || 404, statusMessage: categoryError.value.statusMessage || 'Category not found' })
+if (categoryError.value || !categoryData.value) throw createError({ statusCode: 404, statusMessage: 'Category not found' })
 
 const categories = computed(() => categoriesData.value ?? [])
 const categoryMeta = computed(() => categoryData.value?.category ?? null)
@@ -48,7 +41,7 @@ useSeoMeta({
   title: () => `${categoryMeta.value?.label || 'Category'} Blog`,
   description: () => categoryMeta.value?.description || 'Category-specific blog module.',
   ogTitle: () => `${categoryMeta.value?.label || 'Category'} Blog`,
-  ogDescription: () => categoryMeta.value?.description || 'Category-specific blog module.'
+  ogDescription: () => categoryMeta.value?.description || 'Category-specific blog module.',
 })
 </script>
 

@@ -9,3 +9,8 @@ dist/
 .idea/
 .vscode/
 *.log
+
+templates/skk-corporate
+public/template-assets/skk-corporate
+lib/generated
+.data/
