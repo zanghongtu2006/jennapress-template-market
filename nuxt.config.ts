@@ -2,6 +2,7 @@ import { defineNuxtConfig } from 'nuxt/config'
 import fs from 'node:fs'
 import path from 'node:path'
 import matter from 'gray-matter'
+import { SECONDARY_LOCALES } from './lib/i18n'
 
 function readFrontMatter(filePath: string) {
   const raw = fs.readFileSync(filePath, 'utf-8')
@@ -12,74 +13,139 @@ function slugifyCategory(input: string) {
   return input.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 }
 
-function readPageRoutes() {
-  const pagesDir = path.resolve(process.cwd(), 'content/pages')
-  if (!fs.existsSync(pagesDir)) {
-    return ['/']
+function listMarkdownFiles(dir: string) {
+  if (!fs.existsSync(dir)) {
+    return []
   }
+  return fs.readdirSync(dir).filter((file) => file.endsWith('.md'))
+}
 
-  const files = fs.readdirSync(pagesDir).filter((file) => file.endsWith('.md'))
-  const routes = files
+function readPageRoutesForDir(dir: string) {
+  const files = listMarkdownFiles(dir)
+  return files
     .map((file) => {
-      const data = readFrontMatter(path.join(pagesDir, file))
+      const data = readFrontMatter(path.join(dir, file))
       const slug = data?.slug ? String(data.slug) : ''
       return slug === '/' ? '/' : `/${slug.replace(/^\//, '')}`
     })
     .filter(Boolean)
-
-  return Array.from(new Set(routes))
 }
 
-function readBlogRoutes() {
-  const postsDir = path.resolve(process.cwd(), 'content/posts')
-  if (!fs.existsSync(postsDir)) {
-    return ['/blog']
-  }
+function readPageRoutes() {
+  const pagesDir = path.resolve(process.cwd(), 'content/pages')
+  const defaultRoutes = readPageRoutesForDir(pagesDir)
+  const routes = new Set<string>(defaultRoutes.length ? defaultRoutes : ['/'])
 
-  const files = fs.readdirSync(postsDir).filter((file) => file.endsWith('.md'))
-  const routes = new Set<string>(['/blog'])
+  for (const locale of SECONDARY_LOCALES) {
+    const localizedDir = path.join(pagesDir, locale)
+    const localizedRoutes = new Set(readPageRoutesForDir(localizedDir))
 
-  for (const file of files) {
-    const data = readFrontMatter(path.join(postsDir, file))
-    const slug = data?.slug ? String(data.slug) : ''
-    const category = data?.category ? slugifyCategory(String(data.category)) : 'general'
+    for (const route of defaultRoutes) {
+      routes.add(route === '/' ? `/${locale}` : `/${locale}${route}`)
+    }
 
-    if (!slug) continue
-
-    routes.add(`/blog/${category}`)
-    routes.add(`/blog/${category}/${slug.replace(/^\//, '')}`)
+    for (const route of localizedRoutes) {
+      routes.add(route === '/' ? `/${locale}` : `/${locale}${route}`)
+    }
   }
 
   return Array.from(routes)
 }
 
+function readPostEntriesForDir(dir: string) {
+  const files = listMarkdownFiles(dir)
+  return files
+    .map((file) => {
+      const data = readFrontMatter(path.join(dir, file))
+      const slug = data?.slug ? String(data.slug).replace(/^\//, '') : ''
+      const category = data?.category ? slugifyCategory(String(data.category)) : 'general'
+      if (!slug) return null
+      return { slug, category }
+    })
+    .filter(Boolean) as Array<{ slug: string, category: string }>
+}
 
-function readApiRoutes() {
-  const routes = new Set<string>(['/api/site', '/api/pages', '/api/posts', '/api/posts/categories'])
+function readBlogRoutes() {
+  const postsDir = path.resolve(process.cwd(), 'content/posts')
+  const defaultEntries = readPostEntriesForDir(postsDir)
+  const routes = new Set<string>(['/blog'])
 
-  const pagesDir = path.resolve(process.cwd(), 'content/pages')
-  if (fs.existsSync(pagesDir)) {
-    const files = fs.readdirSync(pagesDir).filter((file) => file.endsWith('.md'))
-    for (const file of files) {
-      const data = readFrontMatter(path.join(pagesDir, file))
-      const slug = data?.slug ? String(data.slug) : ''
-      const normalized = slug === '/' ? '' : String(slug).replace(/^\//, '')
-      if (normalized) {
-        routes.add(`/api/pages/${normalized}`)
-      }
+  for (const entry of defaultEntries) {
+    routes.add(`/blog/${entry.category}`)
+    routes.add(`/blog/${entry.category}/${entry.slug}`)
+  }
+
+  for (const locale of SECONDARY_LOCALES) {
+    const localizedDir = path.join(postsDir, locale)
+    const merged = new Map<string, { slug: string, category: string }>()
+
+    for (const entry of defaultEntries) {
+      merged.set(entry.slug, entry)
+    }
+
+    for (const entry of readPostEntriesForDir(localizedDir)) {
+      merged.set(entry.slug, entry)
+    }
+
+    routes.add(`/${locale}/blog`)
+    for (const entry of merged.values()) {
+      routes.add(`/${locale}/blog/${entry.category}`)
+      routes.add(`/${locale}/blog/${entry.category}/${entry.slug}`)
     }
   }
 
+  return Array.from(routes)
+}
+
+function readApiRoutes() {
+  const routes = new Set<string>(['/api/pages', '/api/posts', '/api/posts/categories'])
+  const pagesDir = path.resolve(process.cwd(), 'content/pages')
   const postsDir = path.resolve(process.cwd(), 'content/posts')
-  if (fs.existsSync(postsDir)) {
-    const files = fs.readdirSync(postsDir).filter((file) => file.endsWith('.md'))
-    for (const file of files) {
-      const data = readFrontMatter(path.join(postsDir, file))
-      const slug = data?.slug ? String(data.slug) : ''
-      const category = data?.category ? slugifyCategory(String(data.category)) : 'general'
-      if (!slug) continue
-      routes.add(`/api/posts/category/${category}`)
-      routes.add(`/api/posts/${category}/${String(slug).replace(/^\//, '')}`)
+
+  const defaultPageRoutes = readPageRoutesForDir(pagesDir)
+  for (const route of defaultPageRoutes) {
+    const normalized = route === '/' ? '' : route.replace(/^\//, '')
+    if (normalized) {
+      routes.add(`/api/pages/${normalized}`)
+    }
+  }
+
+  const defaultPostEntries = readPostEntriesForDir(postsDir)
+  for (const entry of defaultPostEntries) {
+    routes.add(`/api/posts/category/${entry.category}`)
+    routes.add(`/api/posts/${entry.category}/${entry.slug}`)
+  }
+
+  for (const locale of SECONDARY_LOCALES) {
+    routes.add(`/api/site/${locale}`)
+    routes.add(`/api/pages/${locale}`)
+    routes.add(`/api/posts/${locale}`)
+    routes.add(`/api/posts/${locale}/categories`)
+
+    const localizedPageRoutes = new Set(readPageRoutesForDir(path.join(pagesDir, locale)))
+    for (const route of defaultPageRoutes) {
+      const normalized = route === '/' ? '' : route.replace(/^\//, '')
+      if (normalized) {
+        routes.add(`/api/pages/${locale}/${normalized}`)
+      }
+    }
+    for (const route of localizedPageRoutes) {
+      const normalized = route === '/' ? '' : route.replace(/^\//, '')
+      if (normalized) {
+        routes.add(`/api/pages/${locale}/${normalized}`)
+      }
+    }
+
+    const mergedPosts = new Map<string, { slug: string, category: string }>()
+    for (const entry of defaultPostEntries) {
+      mergedPosts.set(entry.slug, entry)
+    }
+    for (const entry of readPostEntriesForDir(path.join(postsDir, locale))) {
+      mergedPosts.set(entry.slug, entry)
+    }
+    for (const entry of mergedPosts.values()) {
+      routes.add(`/api/posts/${locale}/category/${entry.category}`)
+      routes.add(`/api/posts/${locale}/${entry.category}/${entry.slug}`)
     }
   }
 
@@ -90,6 +156,40 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: true },
   css: ['~/assets/main.css'],
+  hooks: {
+    'pages:extend'(pages) {
+      const root = process.cwd()
+      const localizedRoutes = [
+        {
+          name: 'locale-blog-post',
+          path: '/:locale(de|zh)/blog/:category/:slug',
+          file: path.resolve(root, 'pages/blog/[category]/[slug].vue')
+        },
+        {
+          name: 'locale-blog-category',
+          path: '/:locale(de|zh)/blog/:category',
+          file: path.resolve(root, 'pages/blog/[category]/index.vue')
+        },
+        {
+          name: 'locale-blog',
+          path: '/:locale(de|zh)/blog',
+          file: path.resolve(root, 'pages/blog/index.vue')
+        },
+        {
+          name: 'locale-page',
+          path: '/:locale(de|zh)/:slug(.*)',
+          file: path.resolve(root, 'pages/[...slug].vue')
+        },
+        {
+          name: 'locale-home',
+          path: '/:locale(de|zh)',
+          file: path.resolve(root, 'pages/index.vue')
+        }
+      ]
+
+      pages.unshift(...localizedRoutes)
+    }
+  },
   app: {
     baseURL: '/JennaPress/',
     head: {

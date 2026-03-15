@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { SiteConfig } from '~/types'
+import LanguageSelect from '~/templates/saas-landing/components/LanguageSelect.vue'
 import ThemeSelect from '~/templates/saas-landing/components/ThemeSelect.vue'
 
 defineProps<{ site: SiteConfig }>()
@@ -20,6 +21,7 @@ defineProps<{ site: SiteConfig }>()
           </NuxtLink>
         </nav>
 
+        <LanguageSelect />
         <ThemeSelect :themes="site.themes" :default-theme="site.defaultTheme" />
       </div>
     </div>

@@ -1,17 +1,30 @@
 <script setup lang="ts">
 import { joinURL } from 'ufo'
 import type { PageContent } from '~/types'
+import { DEFAULT_LOCALE, isSecondaryLocale } from '~/lib/i18n'
 import TemplateRenderer from '~/components/layouts/TemplateRenderer.vue'
 import TemplateFrameRenderer from '~/components/layouts/TemplateFrameRenderer.vue'
 
 const baseURL = useRuntimeConfig().app.baseURL
+const route = useRoute()
+const locale = computed(() => {
+  const value = Array.isArray(route.params.locale) ? route.params.locale[0] : route.params.locale
+  return typeof value === 'string' && isSecondaryLocale(value) ? value : DEFAULT_LOCALE
+})
 
-const { data: siteData, error: siteError } = await useSite()
+const { data: siteData, error: siteError } = await useSite(locale)
 const site = computed(() => siteData.value)
 
-const { data: pageData, error: pageError } = await useAsyncData<PageContent>('page:/', () => {
-  return $fetch(joinURL(baseURL, 'api/pages'))
-})
+const pageKey = computed(() => `page:${locale.value}:/`)
+const pageUrl = computed(() => locale.value === DEFAULT_LOCALE
+  ? joinURL(baseURL, 'api/pages')
+  : joinURL(baseURL, `api/pages/${locale.value}`))
+
+const { data: pageData, error: pageError } = await useAsyncData<PageContent>(
+  pageKey,
+  () => $fetch(pageUrl.value),
+  { watch: [locale] }
+)
 
 if (siteError.value) {
   throw createError({ statusCode: 500, statusMessage: 'Failed to load site config' })

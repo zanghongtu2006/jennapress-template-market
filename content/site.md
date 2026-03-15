@@ -4,8 +4,8 @@ logoText: JP
 defaultTemplate: saas-landing
 defaultTheme: light
 themes:
-  - dark
   - pink
+  - dark
   - light
 tagline: Build fast and ship globally.
 nav:

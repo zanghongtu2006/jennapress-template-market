@@ -1,24 +1,41 @@
 <script setup lang="ts">
 import { joinURL } from 'ufo'
 import type { PageContent } from '~/types'
+import { DEFAULT_LOCALE, isSecondaryLocale } from '~/lib/i18n'
 import TemplateRenderer from '~/components/layouts/TemplateRenderer.vue'
 import TemplateFrameRenderer from '~/components/layouts/TemplateFrameRenderer.vue'
 
 const baseURL = useRuntimeConfig().app.baseURL
-
 const route = useRoute()
-const slugPath = Array.isArray(route.params.slug)
-  ? route.params.slug.join('/')
-  : route.params.slug || ''
-const slug = `/${slugPath}`
 
-const { data: siteData, error: siteError } = await useSite()
+const locale = computed(() => {
+  const value = Array.isArray(route.params.locale) ? route.params.locale[0] : route.params.locale
+  return typeof value === 'string' && isSecondaryLocale(value) ? value : DEFAULT_LOCALE
+})
+
+const slug = computed(() => {
+  const raw = route.params.slug
+  const parts = Array.isArray(raw) ? raw : (typeof raw === 'string' && raw ? [raw] : [])
+  return `/${parts.join('/')}`
+})
+
+const { data: siteData, error: siteError } = await useSite(locale)
 const site = computed(() => siteData.value)
 
-const key = `page:${slug}`
-const { data: pageData, error: pageError } = await useAsyncData<PageContent>(key, () => {
-  return $fetch(joinURL(baseURL, `api/pages/${slug.replace(/^\//, '')}`))
+const key = computed(() => `page:${locale.value}:${slug.value}`)
+const pageUrl = computed(() => {
+  const normalized = slug.value.replace(/^\//, '')
+  if (locale.value === DEFAULT_LOCALE) {
+    return joinURL(baseURL, `api/pages/${normalized}`)
+  }
+  return joinURL(baseURL, `api/pages/${locale.value}/${normalized}`)
 })
+
+const { data: pageData, error: pageError } = await useAsyncData<PageContent>(
+  key,
+  () => $fetch(pageUrl.value),
+  { watch: [locale, slug] }
+)
 
 if (siteError.value) {
   throw createError({ statusCode: 500, statusMessage: 'Failed to load site config' })
