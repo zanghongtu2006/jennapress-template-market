@@ -1,23 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { SiteConfig } from '~/types'
-import CorporateBasicFrame from '~/templates/corporate-basic/Frame.vue'
-import SaasLandingFrame from '~/templates/saas-landing/Frame.vue'
+import { resolveFrameComponent } from '~/lib/template-registry'
 
 const props = defineProps<{
   template: string
   site: SiteConfig
 }>()
 
-const frameMap = {
-  'corporate-basic': CorporateBasicFrame,
-  'saas-landing': SaasLandingFrame
-} as const
-
-const activeFrame = computed(() => {
-  const name = props.template || 'corporate-basic'
-  return frameMap[name as keyof typeof frameMap] || frameMap['corporate-basic']
-})
+const activeFrame = computed(() => resolveFrameComponent(props.template || 'corporate-basic'))
 </script>
 
 <template>

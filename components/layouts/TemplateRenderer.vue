@@ -1,23 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { PageContent } from '~/types'
-import TemplateCorporateBasic from '~/templates/corporate-basic/Template.vue'
-import TemplateSaasLanding from '~/templates/saas-landing/Template.vue'
+import { resolveTemplateComponent } from '~/lib/template-registry'
 
 const props = defineProps<{
   template: string
   page: PageContent
 }>()
 
-const templateMap = {
-  'corporate-basic': TemplateCorporateBasic,
-  'saas-landing': TemplateSaasLanding
-} as const
-
-const activeTemplate = computed(() => {
-  const name = props.template || 'corporate-basic'
-  return templateMap[name as keyof typeof templateMap] || templateMap['corporate-basic']
-})
+const activeTemplate = computed(() => resolveTemplateComponent(props.template || 'corporate-basic'))
 </script>
 
 <template>

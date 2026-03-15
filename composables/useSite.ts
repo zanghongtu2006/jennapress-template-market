@@ -7,6 +7,11 @@ export async function useSite() {
 
   return await useAsyncData<SiteConfig>(
     'site-config',
-    () => $fetch(siteUrl)
+    () => $fetch(siteUrl),
+    import.meta.dev
+      ? {
+          getCachedData: () => undefined
+        }
+      : undefined
   )
 }

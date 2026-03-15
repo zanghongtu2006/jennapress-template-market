@@ -3,6 +3,7 @@ import path from 'node:path'
 import matter from 'gray-matter'
 import MarkdownIt from 'markdown-it'
 import { validatePageContent, validatePostContent, validateSiteConfig } from '~/lib/schema'
+import { ensureTemplateExists } from '~/server/utils/templates'
 import type {
   Block,
   BlogCategory,
@@ -166,7 +167,9 @@ export function getSiteConfig(): SiteConfig {
   }
 
   const parsed = readMarkdownFile(mdFile)
-  return validateSiteConfig(parsed.data || {})
+  const site = validateSiteConfig(parsed.data || {})
+  ensureTemplateExists(site.defaultTemplate)
+  return site
 }
 
 export function getAllPages(): PageContent[] {

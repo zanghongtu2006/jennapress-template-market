@@ -1,7 +1,7 @@
 ---
 name: Jenna Press
 logoText: JP
-defaultTemplate: corporate-basic
+defaultTemplate: saas-landing
 tagline: Build fast and ship globally.
 nav:
   - label: Home
