@@ -1,13 +1,16 @@
 <script setup lang="ts">
+import { joinURL } from 'ufo'
 import type { PageContent } from '~/types'
 import TemplateRenderer from '~/components/layouts/TemplateRenderer.vue'
 import TemplateFrameRenderer from '~/components/layouts/TemplateFrameRenderer.vue'
+
+const baseURL = useRuntimeConfig().app.baseURL
 
 const { data: siteData, error: siteError } = await useSite()
 const site = computed(() => siteData.value)
 
 const { data: pageData, error: pageError } = await useAsyncData<PageContent>('page:/', () => {
-  return $fetch('/api/pages')
+  return $fetch(joinURL(baseURL, 'api/pages'))
 })
 
 if (siteError.value) {

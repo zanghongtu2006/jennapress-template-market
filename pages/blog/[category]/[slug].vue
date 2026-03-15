@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { joinURL } from 'ufo'
 import type { BlogPostContent } from '~/types'
 import TemplateFrameRenderer from '~/components/layouts/TemplateFrameRenderer.vue'
 import TemplateBlogRenderer from '~/components/layouts/TemplateBlogRenderer.vue'
+
+const baseURL = useRuntimeConfig().app.baseURL
 
 const route = useRoute()
 const category = String(route.params.category || '')
@@ -10,7 +13,7 @@ const slug = String(route.params.slug || '')
 const { data: siteData, error: siteError } = await useSite()
 const site = computed(() => siteData.value)
 
-const { data: postData, error: postError } = await useAsyncData<BlogPostContent>(`blog:post:${category}:${slug}`, () => $fetch(`/api/posts/${category}/${slug}`))
+const { data: postData, error: postError } = await useAsyncData<BlogPostContent>(`blog:post:${category}:${slug}`, () => $fetch(joinURL(baseURL, `api/posts/${category}/${slug}`)))
 
 if (siteError.value) throw createError({ statusCode: 500, statusMessage: siteError.value.statusMessage || 'Failed to load site config' })
 if (postError.value) throw createError({ statusCode: postError.value.statusCode || 404, statusMessage: postError.value.statusMessage || 'Post not found' })

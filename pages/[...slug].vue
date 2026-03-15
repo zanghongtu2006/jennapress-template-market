@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { joinURL } from 'ufo'
 import type { PageContent } from '~/types'
 import TemplateRenderer from '~/components/layouts/TemplateRenderer.vue'
 import TemplateFrameRenderer from '~/components/layouts/TemplateFrameRenderer.vue'
+
+const baseURL = useRuntimeConfig().app.baseURL
 
 const route = useRoute()
 const slugPath = Array.isArray(route.params.slug)
@@ -14,7 +17,7 @@ const site = computed(() => siteData.value)
 
 const key = `page:${slug}`
 const { data: pageData, error: pageError } = await useAsyncData<PageContent>(key, () => {
-  return $fetch(`/api/pages/${slug.replace(/^\//, '')}`)
+  return $fetch(joinURL(baseURL, `api/pages/${slug.replace(/^\//, '')}`))
 })
 
 if (siteError.value) {

@@ -53,6 +53,39 @@ function readBlogRoutes() {
   return Array.from(routes)
 }
 
+
+function readApiRoutes() {
+  const routes = new Set<string>(['/api/site', '/api/pages', '/api/posts', '/api/posts/categories'])
+
+  const pagesDir = path.resolve(process.cwd(), 'content/pages')
+  if (fs.existsSync(pagesDir)) {
+    const files = fs.readdirSync(pagesDir).filter((file) => file.endsWith('.md'))
+    for (const file of files) {
+      const data = readFrontMatter(path.join(pagesDir, file))
+      const slug = data?.slug ? String(data.slug) : ''
+      const normalized = slug === '/' ? '' : String(slug).replace(/^\//, '')
+      if (normalized) {
+        routes.add(`/api/pages/${normalized}`)
+      }
+    }
+  }
+
+  const postsDir = path.resolve(process.cwd(), 'content/posts')
+  if (fs.existsSync(postsDir)) {
+    const files = fs.readdirSync(postsDir).filter((file) => file.endsWith('.md'))
+    for (const file of files) {
+      const data = readFrontMatter(path.join(postsDir, file))
+      const slug = data?.slug ? String(data.slug) : ''
+      const category = data?.category ? slugifyCategory(String(data.category)) : 'general'
+      if (!slug) continue
+      routes.add(`/api/posts/category/${category}`)
+      routes.add(`/api/posts/${category}/${String(slug).replace(/^\//, '')}`)
+    }
+  }
+
+  return Array.from(routes)
+}
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: true },
@@ -72,7 +105,7 @@ export default defineNuxtConfig({
   nitro: {
     prerender: {
       autoSubfolderIndex: true,
-      routes: [...readPageRoutes(), ...readBlogRoutes(), '/api/site']
+      routes: [...readPageRoutes(), ...readBlogRoutes(), ...readApiRoutes()]
     }
   },
   runtimeConfig: {

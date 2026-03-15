@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { joinURL } from 'ufo'
 import type { BlogCategory, BlogPostSummary } from '~/types'
 import TemplateFrameRenderer from '~/components/layouts/TemplateFrameRenderer.vue'
 import TemplateBlogRenderer from '~/components/layouts/TemplateBlogRenderer.vue'
+
+const baseURL = useRuntimeConfig().app.baseURL
 
 const route = useRoute()
 const category = String(route.params.category || '')
@@ -9,8 +12,8 @@ const category = String(route.params.category || '')
 const { data: siteData, error: siteError } = await useSite()
 const site = computed(() => siteData.value)
 
-const { data: categoriesData, error: categoriesError } = await useAsyncData<BlogCategory[]>('blog:categories', () => $fetch('/api/posts/categories'))
-const { data: categoryData, error: categoryError } = await useAsyncData<{ category: BlogCategory, posts: BlogPostSummary[] }>(`blog:category:${category}`, () => $fetch(`/api/posts/category/${category}`))
+const { data: categoriesData, error: categoriesError } = await useAsyncData<BlogCategory[]>('blog:categories', () => $fetch(joinURL(baseURL, 'api/posts/categories')))
+const { data: categoryData, error: categoryError } = await useAsyncData<{ category: BlogCategory, posts: BlogPostSummary[] }>(`blog:category:${category}`, () => $fetch(joinURL(baseURL, `api/posts/category/${category}`)))
 
 if (siteError.value) throw createError({ statusCode: 500, statusMessage: siteError.value.statusMessage || 'Failed to load site config' })
 if (categoriesError.value) throw createError({ statusCode: 500, statusMessage: categoriesError.value.statusMessage || 'Failed to load categories' })
