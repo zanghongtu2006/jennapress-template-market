@@ -7,12 +7,31 @@ type ThemeOptions = {
   defaultTheme?: string
 }
 
+declare global {
+  interface Window {
+    __SITE_THEME__?: string
+  }
+}
+
 function normalizeThemes(themes: string[] | undefined, defaultTheme: string) {
   const normalized = Array.isArray(themes)
     ? themes.filter((item) => typeof item === 'string' && item.trim()).map((item) => item.trim())
     : []
 
   return normalized.length ? normalized : [defaultTheme]
+}
+
+function applyThemeToDocument(value: string) {
+  if (!import.meta.client) {
+    return
+  }
+
+  document.documentElement.dataset.theme = value
+
+  const frame = document.querySelector('.template-saas-frame')
+  if (frame) {
+    frame.setAttribute('data-theme', value)
+  }
 }
 
 export function useTheme(options: ThemeOptions = {}) {
@@ -23,14 +42,26 @@ export function useTheme(options: ThemeOptions = {}) {
   const themes = computed(() => normalizeThemes(options.themes, fallbackTheme))
   const defaultTheme = computed(() => themes.value.includes(fallbackTheme) ? fallbackTheme : themes.value[0])
 
-  const themeState = useState<string>('site-theme', () => defaultTheme.value)
+  const themeState = useState<string>('site-theme', () => {
+    if (import.meta.client) {
+      const presetTheme = window.__SITE_THEME__
+      if (presetTheme && normalizeThemes(options.themes, fallbackTheme).includes(presetTheme)) {
+        return presetTheme
+      }
+    }
+
+    return defaultTheme.value
+  })
   const initialized = useState<boolean>('site-theme-initialized', () => false)
   const watchBound = useState<boolean>('site-theme-watch-bound', () => false)
 
   if (import.meta.client && !initialized.value) {
+    const presetTheme = window.__SITE_THEME__
     const savedTheme = window.localStorage.getItem(STORAGE_KEY)
-    themeState.value = savedTheme && themes.value.includes(savedTheme) ? savedTheme : defaultTheme.value
-    document.documentElement.dataset.theme = themeState.value
+    const nextTheme = [presetTheme, savedTheme].find((value): value is string => !!value && themes.value.includes(value))
+
+    themeState.value = nextTheme || defaultTheme.value
+    applyThemeToDocument(themeState.value)
     initialized.value = true
   }
 
@@ -42,8 +73,9 @@ export function useTheme(options: ThemeOptions = {}) {
 
   if (import.meta.client && !watchBound.value) {
     watch(themeState, (value) => {
+      window.__SITE_THEME__ = value
       window.localStorage.setItem(STORAGE_KEY, value)
-      document.documentElement.dataset.theme = value
+      applyThemeToDocument(value)
     }, { immediate: true })
     watchBound.value = true
   }

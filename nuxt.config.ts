@@ -203,8 +203,52 @@ export default defineNuxtConfig({
         {
           innerHTML: `(function () {
   try {
-    var t = localStorage.getItem('site-theme')
-    if (t) document.documentElement.dataset.theme = t
+    var themeKey = 'site-theme'
+    var languageKey = 'site-language'
+    var defaultLocale = 'en'
+    var secondaryLocales = ['de', 'zh']
+    var baseURL = '/JennaPress/'
+
+    var applyTheme = function (value) {
+      if (!value) return
+      window.__SITE_THEME__ = value
+      document.documentElement.dataset.theme = value
+
+      var syncFrame = function () {
+        var frame = document.querySelector('.template-saas-frame')
+        if (frame) frame.setAttribute('data-theme', value)
+      }
+
+      syncFrame()
+      document.addEventListener('DOMContentLoaded', syncFrame, { once: true })
+      requestAnimationFrame(syncFrame)
+    }
+
+    var savedTheme = localStorage.getItem(themeKey)
+    if (savedTheme) applyTheme(savedTheme)
+
+    var savedLanguage = localStorage.getItem(languageKey)
+    if (!savedLanguage) return
+
+    var path = window.location.pathname
+    if (!path.startsWith(baseURL)) return
+
+    var relativePath = '/' + path.slice(baseURL.length).replace(/^\/+/, '')
+    if (relativePath === '//') relativePath = '/'
+
+    var parts = relativePath.split('/').filter(Boolean)
+    var currentLocale = secondaryLocales.indexOf(parts[0]) !== -1 ? parts[0] : defaultLocale
+
+    if (currentLocale !== defaultLocale) return
+    if (savedLanguage === defaultLocale) return
+    if (secondaryLocales.indexOf(savedLanguage) === -1) return
+
+    var targetPath = relativePath === '/' ? '/' + savedLanguage : '/' + savedLanguage + relativePath
+    var targetHref = baseURL.replace(/\/$/, '') + targetPath + window.location.search + window.location.hash
+
+    if (targetHref !== window.location.pathname + window.location.search + window.location.hash) {
+      window.location.replace(targetHref)
+    }
   } catch (e) {}
 })()`,
           tagPosition: 'head'

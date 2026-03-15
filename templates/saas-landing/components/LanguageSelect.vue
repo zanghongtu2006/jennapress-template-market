@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES, prefixPathForLocale, stripLocalePrefixFromPath } from '~/lib/i18n'
 
+const STORAGE_KEY = 'site-language'
 const route = useRoute()
 
 const localeLabels: Record<string, string> = {
@@ -13,6 +14,11 @@ const currentLocale = computed(() => stripLocalePrefixFromPath(route.path).local
 
 async function onChange(event: Event) {
   const value = (event.target as HTMLSelectElement).value || DEFAULT_LOCALE
+
+  if (import.meta.client) {
+    window.localStorage.setItem(STORAGE_KEY, value)
+  }
+
   const parsed = stripLocalePrefixFromPath(route.path)
   const targetPath = prefixPathForLocale(parsed.path, value)
   await navigateTo({
