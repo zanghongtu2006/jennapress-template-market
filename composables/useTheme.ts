@@ -30,6 +30,7 @@ export function useTheme(options: ThemeOptions = {}) {
   if (import.meta.client && !initialized.value) {
     const savedTheme = window.localStorage.getItem(STORAGE_KEY)
     themeState.value = savedTheme && themes.value.includes(savedTheme) ? savedTheme : defaultTheme.value
+    document.documentElement.dataset.theme = themeState.value
     initialized.value = true
   }
 
@@ -42,6 +43,7 @@ export function useTheme(options: ThemeOptions = {}) {
   if (import.meta.client && !watchBound.value) {
     watch(themeState, (value) => {
       window.localStorage.setItem(STORAGE_KEY, value)
+      document.documentElement.dataset.theme = value
     }, { immediate: true })
     watchBound.value = true
   }

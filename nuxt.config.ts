@@ -98,6 +98,17 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: 'favicon.svg' }
+      ],
+      script: [
+        {
+          innerHTML: `(function () {
+  try {
+    var t = localStorage.getItem('site-theme')
+    if (t) document.documentElement.dataset.theme = t
+  } catch (e) {}
+})()`,
+          tagPosition: 'head'
+        }
       ]
     }
   },
