@@ -61,20 +61,24 @@ function isBlogCategoryAccent(value: string | undefined): value is BlogCategoryA
   return value === 'default' || value === 'case-study' || value === 'product-note' || value === 'event-promo'
 }
 
-const genericCategoryText: Record<SupportedLocale, { description: (label: string) => string; listTitle: (label: string) => string }> = {
+const genericCategoryText = {
   en: {
-    description: (label) => `${label} posts grouped under one first-level CMS category.`,
-    listTitle: (label) => `${label} articles`
+    description: (label: string) => `${label} posts grouped under one first-level CMS category.`,
+    listTitle: (label: string) => `${label} articles`
   },
   de: {
-    description: (label) => `${label}-Beiträge in einer Blog-Kategorie der ersten Ebene.`,
-    listTitle: (label) => `${label}-Artikel`
+    description: (label: string) => `${label}-Beiträge in einer Blog-Kategorie der ersten Ebene.`,
+    listTitle: (label: string) => `${label}-Artikel`
+  },
+  es: {
+    description: (label: string) => `Publicaciones de ${label} agrupadas en una categoría principal del blog.`,
+    listTitle: (label: string) => `Artículos de ${label}`
   },
   zh: {
-    description: (label) => `归档在一级博客分类“${label}”下的文章。`,
-    listTitle: (label) => `${label}文章`
+    description: (label: string) => `归档在一级博客分类“${label}”下的文章。`,
+    listTitle: (label: string) => `${label}文章`
   }
-}
+} satisfies Record<string, { description: (label: string) => string; listTitle: (label: string) => string }>
 
 function markdownToRichTextBlock(markdown: string, title?: string): RichTextBlock | null {
   const trimmed = markdown.trim()
@@ -280,7 +284,7 @@ function buildCategoryMeta(post: PostContent, locale: SupportedLocale = DEFAULT_
   const categoryValue = typeof post.category === 'string' && post.category.trim() ? post.category.trim() : 'General'
   const label = typeof extra.categoryLabel === 'string' && extra.categoryLabel.trim() ? extra.categoryLabel.trim() : toCategoryLabel(categoryValue)
   const slug = typeof extra.categorySlug === 'string' && extra.categorySlug.trim() ? slugifyCategory(extra.categorySlug) : slugifyCategory(categoryValue)
-  const text = genericCategoryText[locale]
+  const text = genericCategoryText[locale] ?? genericCategoryText.en
 
   return {
     key: typeof extra.categoryKey === 'string' && extra.categoryKey.trim() ? extra.categoryKey.trim() : categoryValue || 'General',

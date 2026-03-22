@@ -2,7 +2,8 @@ import { defineNuxtConfig } from 'nuxt/config'
 import fs from 'node:fs'
 import path from 'node:path'
 import matter from 'gray-matter'
-import { SECONDARY_LOCALES } from './lib/i18n'
+
+const DEFAULT_LOCALE = 'en'
 
 function readFrontMatter(filePath: string) {
   const raw = fs.readFileSync(filePath, 'utf-8')
@@ -19,6 +20,36 @@ function listMarkdownFiles(dir: string) {
   }
   return fs.readdirSync(dir).filter((file) => file.endsWith('.md'))
 }
+
+function discoverLocales() {
+  const contentDir = path.resolve(process.cwd(), 'content')
+  const locales = new Set<string>([DEFAULT_LOCALE])
+
+  if (!fs.existsSync(contentDir)) {
+    return { supported: Array.from(locales), secondary: [] as string[] }
+  }
+
+  for (const file of fs.readdirSync(contentDir)) {
+    const match = file.match(/^site\.([a-z0-9-]+)\.md$/i)
+    if (match?.[1]) {
+      locales.add(match[1].toLowerCase())
+    }
+  }
+
+  const supported = Array.from(locales).sort((a, b) => {
+    if (a === DEFAULT_LOCALE) return -1
+    if (b === DEFAULT_LOCALE) return 1
+    return a.localeCompare(b)
+  })
+
+  return {
+    supported,
+    secondary: supported.filter((locale) => locale !== DEFAULT_LOCALE)
+  }
+}
+
+const { supported: SUPPORTED_LOCALES, secondary: SECONDARY_LOCALES } = discoverLocales()
+const localePattern = SECONDARY_LOCALES.length ? SECONDARY_LOCALES.map((locale) => locale.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') : '__no_locale__'
 
 function readPageRoutesForDir(dir: string) {
   const files = listMarkdownFiles(dir)
@@ -97,7 +128,6 @@ function readBlogRoutes() {
   return Array.from(routes)
 }
 
-
 function readDefaultTheme() {
   const sitePath = path.resolve(process.cwd(), 'content/site.md')
   if (!fs.existsSync(sitePath)) {
@@ -121,32 +151,34 @@ export default defineNuxtConfig({
       const localizedRoutes = [
         {
           name: 'locale-blog-post',
-          path: '/:locale(de|zh)/blog/:category/:slug',
+          path: `/:locale(${localePattern})/blog/:category/:slug`,
           file: path.resolve(root, 'pages/blog/[category]/[slug].vue')
         },
         {
           name: 'locale-blog-category',
-          path: '/:locale(de|zh)/blog/:category',
+          path: `/:locale(${localePattern})/blog/:category`,
           file: path.resolve(root, 'pages/blog/[category]/index.vue')
         },
         {
           name: 'locale-blog',
-          path: '/:locale(de|zh)/blog',
+          path: `/:locale(${localePattern})/blog`,
           file: path.resolve(root, 'pages/blog/index.vue')
         },
         {
           name: 'locale-page',
-          path: '/:locale(de|zh)/:slug(.*)',
+          path: `/:locale(${localePattern})/:slug(.*)`,
           file: path.resolve(root, 'pages/[...slug].vue')
         },
         {
           name: 'locale-home',
-          path: '/:locale(de|zh)',
+          path: `/:locale(${localePattern})`,
           file: path.resolve(root, 'pages/index.vue')
         }
       ]
 
-      pages.unshift(...localizedRoutes)
+      if (SECONDARY_LOCALES.length) {
+        pages.unshift(...localizedRoutes)
+      }
     }
   },
   app: {
@@ -170,7 +202,7 @@ export default defineNuxtConfig({
     var themeKey = 'site-theme'
     var languageKey = 'site-language'
     var defaultLocale = 'en'
-    var secondaryLocales = ['de', 'zh']
+    var secondaryLocales = ${JSON.stringify(SECONDARY_LOCALES)}
     var baseURL = '/JennaPress/'
     var defaultTheme = '${defaultTheme}'
 
@@ -225,7 +257,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      siteBaseUrl: 'https://example.com'
+      siteBaseUrl: 'https://example.com',
+      supportedLocales: SUPPORTED_LOCALES
     }
   },
   typescript: {

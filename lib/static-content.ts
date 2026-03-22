@@ -81,20 +81,24 @@ function isBlogCategoryAccent(value: string | undefined): value is BlogCategoryA
   return value === 'default' || value === 'case-study' || value === 'product-note' || value === 'event-promo'
 }
 
-const genericCategoryText: Record<SupportedLocale, { description: (label: string) => string; listTitle: (label: string) => string }> = {
+const genericCategoryText = {
   en: {
-    description: (label) => `${label} posts grouped under one first-level CMS category.`,
-    listTitle: (label) => `${label} articles`,
+    description: (label: string) => `${label} posts grouped under one first-level CMS category.`,
+    listTitle: (label: string) => `${label} articles`,
   },
   de: {
-    description: (label) => `${label}-Beiträge in einer Blog-Kategorie der ersten Ebene.`,
-    listTitle: (label) => `${label}-Artikel`,
+    description: (label: string) => `${label}-Beiträge in einer Blog-Kategorie der ersten Ebene.`,
+    listTitle: (label: string) => `${label}-Artikel`,
+  },
+  es: {
+    description: (label: string) => `Publicaciones de ${label} agrupadas en una categoría principal del blog.`,
+    listTitle: (label: string) => `Artículos de ${label}`,
   },
   zh: {
-    description: (label) => `归档在一级博客分类“${label}”下的文章。`,
-    listTitle: (label) => `${label}文章`,
+    description: (label: string) => `归档在一级博客分类“${label}”下的文章。`,
+    listTitle: (label: string) => `${label}文章`,
   },
-}
+} satisfies Record<string, { description: (label: string) => string; listTitle: (label: string) => string }>
 
 function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T
@@ -196,16 +200,15 @@ function parseRawMarkdown(raw: string) {
 }
 
 function localeFromPath(filePath: string, collection: 'pages' | 'posts' | 'site'): SupportedLocale {
+  const normalized = filePath.replace(/\\/g, '/')
+
   if (collection === 'site') {
-    if (filePath.endsWith('site.de.md')) return 'de'
-    if (filePath.endsWith('site.zh.md')) return 'zh'
-    return DEFAULT_LOCALE
+    const match = normalized.match(/\/site\.([a-z0-9-]+)\.md$/i)
+    return match?.[1]?.toLowerCase() || DEFAULT_LOCALE
   }
 
-  const normalized = filePath.replace(/\\/g, '/')
-  if (normalized.includes(`/${collection}/de/`)) return 'de'
-  if (normalized.includes(`/${collection}/zh/`)) return 'zh'
-  return DEFAULT_LOCALE
+  const match = normalized.match(new RegExp(`/${collection}/([a-z0-9-]+)/`, 'i'))
+  return match?.[1]?.toLowerCase() || DEFAULT_LOCALE
 }
 
 function readPageFile(raw: string): PageContent {
@@ -326,7 +329,7 @@ function buildCategoryMeta(post: PostContent, locale: SupportedLocale = DEFAULT_
   const categoryValue = typeof post.category === 'string' && post.category.trim() ? post.category.trim() : 'General'
   const label = typeof extra.categoryLabel === 'string' && extra.categoryLabel.trim() ? extra.categoryLabel.trim() : toCategoryLabel(categoryValue)
   const slug = typeof extra.categorySlug === 'string' && extra.categorySlug.trim() ? slugifyCategory(extra.categorySlug) : slugifyCategory(categoryValue)
-  const text = genericCategoryText[locale]
+  const text = genericCategoryText[locale] ?? genericCategoryText.en
 
   return {
     key: typeof extra.categoryKey === 'string' && extra.categoryKey.trim() ? extra.categoryKey.trim() : categoryValue || 'General',
@@ -348,14 +351,15 @@ function toBlogPost(post: PostContent, locale: SupportedLocale = DEFAULT_LOCALE)
   }
 }
 
-const systemNavLabels: Record<SupportedLocale, { home: string; blog: string }> = {
+const systemNavLabels = {
   en: { home: 'Home', blog: 'Blog' },
   de: { home: 'Start', blog: 'Blog' },
+  es: { home: 'Inicio', blog: 'Blog' },
   zh: { home: '首页', blog: '博客' },
-}
+} satisfies Record<string, { home: string; blog: string }>
 
 function discoverNav(locale: SupportedLocale, pages: Record<string, PageContent>, posts: BlogPostSummary[]): NavItem[] {
-  const labels = systemNavLabels[locale]
+  const labels = systemNavLabels[locale] ?? systemNavLabels.en
   const nav: NavItem[] = []
 
   if (pages['/']) {

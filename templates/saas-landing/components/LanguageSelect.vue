@@ -5,10 +5,12 @@ import { DEFAULT_LOCALE, SUPPORTED_LOCALES, prefixPathForLocale, stripLocalePref
 const STORAGE_KEY = 'site-language'
 const route = useRoute()
 
-const localeLabels: Record<string, string> = {
-  en: 'English',
-  de: 'Deutsch',
-  zh: '中文'
+const displayNames = typeof Intl !== 'undefined' && typeof Intl.DisplayNames !== 'undefined'
+  ? new Intl.DisplayNames(SUPPORTED_LOCALES, { type: 'language' })
+  : null
+
+function getLocaleLabel(locale: string) {
+  return displayNames?.of(locale) || locale
 }
 
 const currentLocale = computed(() => stripLocalePrefixFromPath(route.path).locale)
@@ -46,7 +48,7 @@ const selectedLanguage = computed({
         class="theme-select-control"
       >
         <option v-for="locale in SUPPORTED_LOCALES" :key="locale" :value="locale">
-          {{ localeLabels[locale] || locale }}
+          {{ getLocaleLabel(locale) }}
         </option>
       </select>
     </div>
