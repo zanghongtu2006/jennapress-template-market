@@ -81,24 +81,6 @@ function isBlogCategoryAccent(value: string | undefined): value is BlogCategoryA
   return value === 'default' || value === 'case-study' || value === 'product-note' || value === 'event-promo'
 }
 
-const genericCategoryText = {
-  en: {
-    description: (label: string) => `${label} posts grouped under one first-level CMS category.`,
-    listTitle: (label: string) => `${label} articles`,
-  },
-  de: {
-    description: (label: string) => `${label}-Beiträge in einer Blog-Kategorie der ersten Ebene.`,
-    listTitle: (label: string) => `${label}-Artikel`,
-  },
-  es: {
-    description: (label: string) => `Publicaciones de ${label} agrupadas en una categoría principal del blog.`,
-    listTitle: (label: string) => `Artículos de ${label}`,
-  },
-  zh: {
-    description: (label: string) => `归档在一级博客分类“${label}”下的文章。`,
-    listTitle: (label: string) => `${label}文章`,
-  },
-} satisfies Record<string, { description: (label: string) => string; listTitle: (label: string) => string }>
 
 function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T
@@ -329,15 +311,13 @@ function buildCategoryMeta(post: PostContent, locale: SupportedLocale = DEFAULT_
   const categoryValue = typeof post.category === 'string' && post.category.trim() ? post.category.trim() : 'General'
   const label = typeof extra.categoryLabel === 'string' && extra.categoryLabel.trim() ? extra.categoryLabel.trim() : toCategoryLabel(categoryValue)
   const slug = typeof extra.categorySlug === 'string' && extra.categorySlug.trim() ? slugifyCategory(extra.categorySlug) : slugifyCategory(categoryValue)
-  const text = genericCategoryText[locale] ?? genericCategoryText.en
-
   return {
     key: typeof extra.categoryKey === 'string' && extra.categoryKey.trim() ? extra.categoryKey.trim() : categoryValue || 'General',
     slug,
     label,
-    description: typeof extra.categoryDescription === 'string' && extra.categoryDescription.trim() ? extra.categoryDescription.trim() : text.description(label),
+    description: typeof extra.categoryDescription === 'string' && extra.categoryDescription.trim() ? extra.categoryDescription.trim() : label,
     accent: isBlogCategoryAccent(extra.categoryAccent) ? extra.categoryAccent : 'default',
-    listTitle: typeof extra.categoryListTitle === 'string' && extra.categoryListTitle.trim() ? extra.categoryListTitle.trim() : text.listTitle(label),
+    listTitle: typeof extra.categoryListTitle === 'string' && extra.categoryListTitle.trim() ? extra.categoryListTitle.trim() : label,
   }
 }
 
@@ -351,19 +331,12 @@ function toBlogPost(post: PostContent, locale: SupportedLocale = DEFAULT_LOCALE)
   }
 }
 
-const systemNavLabels = {
-  en: { home: 'Home', blog: 'Blog' },
-  de: { home: 'Start', blog: 'Blog' },
-  es: { home: 'Inicio', blog: 'Blog' },
-  zh: { home: '首页', blog: '博客' },
-} satisfies Record<string, { home: string; blog: string }>
 
 function discoverNav(locale: SupportedLocale, pages: Record<string, PageContent>, posts: BlogPostSummary[]): NavItem[] {
-  const labels = systemNavLabels[locale] ?? systemNavLabels.en
   const nav: NavItem[] = []
 
   if (pages['/']) {
-    nav.push({ label: labels.home, to: prefixPathForLocale('/', locale) })
+    nav.push({ label: pages['/'].title, to: prefixPathForLocale('/', locale) })
   }
 
   const preferred = ['/about', '/principles']
@@ -384,7 +357,7 @@ function discoverNav(locale: SupportedLocale, pages: Record<string, PageContent>
   }
 
   if (posts.length) {
-    nav.push({ label: labels.blog, to: prefixPathForLocale('/blog', locale) })
+    nav.push({ label: 'Blog', to: prefixPathForLocale('/blog', locale) })
   }
 
   return nav
@@ -429,7 +402,9 @@ function buildLocalePayload(locale: SupportedLocale): LocalePayload {
   }
 
   const site = getSiteConfigForLocale(locale)
-  site.nav = discoverNav(locale, pages, blogPosts)
+  if (!Array.isArray(site.nav) || site.nav.length === 0) {
+    site.nav = discoverNav(locale, pages, blogPosts)
+  }
 
   return {
     site,

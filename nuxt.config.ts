@@ -2,8 +2,38 @@ import { defineNuxtConfig } from 'nuxt/config'
 import fs from 'node:fs'
 import path from 'node:path'
 import matter from 'gray-matter'
+import { locales } from './content/l18n'
 
-const DEFAULT_LOCALE = 'en'
+function normalizeLocales() {
+  const seen = new Set<string>()
+  const normalized: Array<{ code: string, label: string, isDefault?: boolean }> = []
+
+  for (const item of locales) {
+    const code = typeof item?.code === 'string' ? item.code.trim() : ''
+    const label = typeof item?.label === 'string' ? item.label.trim() : ''
+
+    if (!code || !label || seen.has(code)) {
+      continue
+    }
+
+    seen.add(code)
+    normalized.push({ code, label, ...(item?.isDefault ? { isDefault: true } : {}) })
+  }
+
+  if (!normalized.length) {
+    throw new Error('content/l18n.ts must export at least one locale')
+  }
+
+  if (normalized.some((item) => item.isDefault)) {
+    return normalized
+  }
+
+  const [first, ...rest] = normalized
+  return [{ ...first, isDefault: true }, ...rest]
+}
+
+const LOCALES = normalizeLocales()
+const DEFAULT_LOCALE = LOCALES.find((item) => item.isDefault)?.code || LOCALES[0]!.code
 
 function readFrontMatter(filePath: string) {
   const raw = fs.readFileSync(filePath, 'utf-8')
@@ -21,34 +51,8 @@ function listMarkdownFiles(dir: string) {
   return fs.readdirSync(dir).filter((file) => file.endsWith('.md'))
 }
 
-function discoverLocales() {
-  const contentDir = path.resolve(process.cwd(), 'content')
-  const locales = new Set<string>([DEFAULT_LOCALE])
-
-  if (!fs.existsSync(contentDir)) {
-    return { supported: Array.from(locales), secondary: [] as string[] }
-  }
-
-  for (const file of fs.readdirSync(contentDir)) {
-    const match = file.match(/^site\.([a-z0-9-]+)\.md$/i)
-    if (match?.[1]) {
-      locales.add(match[1].toLowerCase())
-    }
-  }
-
-  const supported = Array.from(locales).sort((a, b) => {
-    if (a === DEFAULT_LOCALE) return -1
-    if (b === DEFAULT_LOCALE) return 1
-    return a.localeCompare(b)
-  })
-
-  return {
-    supported,
-    secondary: supported.filter((locale) => locale !== DEFAULT_LOCALE)
-  }
-}
-
-const { supported: SUPPORTED_LOCALES, secondary: SECONDARY_LOCALES } = discoverLocales()
+const SUPPORTED_LOCALES = LOCALES.map((item) => item.code)
+const SECONDARY_LOCALES = SUPPORTED_LOCALES.filter((locale) => locale !== DEFAULT_LOCALE)
 const localePattern = SECONDARY_LOCALES.length ? SECONDARY_LOCALES.map((locale) => locale.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') : '__no_locale__'
 
 function readPageRoutesForDir(dir: string) {
@@ -220,11 +224,12 @@ export default defineNuxtConfig({
 
     var path = window.location.pathname
     var normalizedBaseURL = baseURL.endsWith('/') ? baseURL : baseURL + '/'
-    var normalizedBaseRoot = normalizedBaseURL.replace(/\/$/, '')
+    var normalizedBaseRoot = normalizedBaseURL.slice(-1) === '/' ? normalizedBaseURL.slice(0, -1) : normalizedBaseURL
     if (!(path === normalizedBaseRoot || path.startsWith(normalizedBaseURL))) return
 
     var slicedPath = path === normalizedBaseRoot ? '' : path.slice(normalizedBaseURL.length)
-    var relativePath = '/' + slicedPath.replace(/^\/+/, '')
+    while (slicedPath.charAt(0) === '/') slicedPath = slicedPath.slice(1)
+    var relativePath = '/' + slicedPath
     if (relativePath === '//') relativePath = '/'
 
     var parts = relativePath.split('/').filter(Boolean)
@@ -235,7 +240,8 @@ export default defineNuxtConfig({
     if (secondaryLocales.indexOf(savedLanguage) === -1) return
 
     var targetPath = relativePath === '/' ? '/' + savedLanguage : '/' + savedLanguage + relativePath
-    var targetHref = baseURL.replace(/\/$/, '') + targetPath + window.location.search + window.location.hash
+    var targetHrefBase = baseURL.slice(-1) === '/' ? baseURL.slice(0, -1) : baseURL
+    var targetHref = targetHrefBase + targetPath + window.location.search + window.location.hash
 
     if (targetHref !== window.location.pathname + window.location.search + window.location.hash) {
       window.location.replace(targetHref)

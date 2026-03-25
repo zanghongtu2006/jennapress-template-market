@@ -1,34 +1,55 @@
-const siteModules = import.meta.glob('../content/site*.md', {
-  query: '?raw',
-  import: 'default',
-  eager: false,
-})
+import { locales } from "../content/l18n"
 
-export const DEFAULT_LOCALE = 'en'
-
-function discoverSupportedLocales() {
-  const locales = new Set<string>([DEFAULT_LOCALE])
-
-  for (const filePath of Object.keys(siteModules)) {
-    const normalized = filePath.replace(/\\/g, '/')
-    const match = normalized.match(/\/site\.([a-z0-9-]+)\.md$/i)
-    if (match?.[1]) {
-      locales.add(match[1].toLowerCase())
-    }
-  }
-
-  return Array.from(locales).sort((a, b) => {
-    if (a === DEFAULT_LOCALE) return -1
-    if (b === DEFAULT_LOCALE) return 1
-    return a.localeCompare(b)
-  })
+export type LocaleConfig = {
+  code: string
+  label: string
+  isDefault?: boolean
 }
 
-export const SUPPORTED_LOCALES = discoverSupportedLocales()
+function normalizeLocaleList(input: LocaleConfig[]) {
+  const seen = new Set<string>()
+  const normalized: LocaleConfig[] = []
+
+  for (const item of input) {
+    const code = typeof item?.code === 'string' ? item.code.trim() : ''
+    const label = typeof item?.label === 'string' ? item.label.trim() : ''
+
+    if (!code || !label || seen.has(code)) {
+      continue
+    }
+
+    seen.add(code)
+    normalized.push({
+      code,
+      label,
+      ...(item?.isDefault ? { isDefault: true } : {}),
+    })
+  }
+
+  if (!normalized.length) {
+    throw new Error('content/l18n.ts must export at least one locale')
+  }
+
+  const explicitDefault = normalized.find((item) => item.isDefault)
+  if (explicitDefault) {
+    return normalized
+  }
+
+  const [first, ...rest] = normalized
+  return [{ ...first, isDefault: true }, ...rest]
+}
+
+export const LOCALES = normalizeLocaleList(locales)
+export const DEFAULT_LOCALE = LOCALES.find((item) => item.isDefault)?.code || LOCALES[0]!.code
+export const SUPPORTED_LOCALES = LOCALES.map((item) => item.code)
 export const SECONDARY_LOCALES = SUPPORTED_LOCALES.filter((locale) => locale !== DEFAULT_LOCALE)
 
 export type SupportedLocale = string
 export type SecondaryLocale = string
+
+export function getLocaleLabel(locale: string | null | undefined) {
+  return LOCALES.find((item) => item.code === locale)?.label || (locale || '')
+}
 
 export function isSecondaryLocale(value: string | null | undefined): value is SecondaryLocale {
   return !!value && SECONDARY_LOCALES.includes(value)
