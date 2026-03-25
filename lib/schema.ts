@@ -7,6 +7,13 @@ function ensureString(value: unknown, field: string): string {
   return value
 }
 
+function ensureText(value: unknown, field: string): string {
+  if (typeof value !== 'string') {
+    throw new Error(`Invalid field: ${field}`)
+  }
+  return value
+}
+
 function ensureArray(value: unknown, field: string): unknown[] {
   if (!Array.isArray(value)) {
     throw new Error(`Invalid field: ${field}`)
@@ -38,27 +45,27 @@ function validateGenericBlock(block: any, index: number): Block {
 
   switch (block.type) {
     case 'hero':
-      ensureString(block.title, `blocks[${index}].title`)
-      ensureString(block.description, `blocks[${index}].description`)
+      ensureText(block.title, `blocks[${index}].title`)
+      ensureText(block.description, `blocks[${index}].description`)
       return block as Block
     case 'feature-grid':
       ensureString(block.title, `blocks[${index}].title`)
       ensureArray(block.items, `blocks[${index}].items`)
       return block as Block
     case 'rich-text':
-      ensureString(block.html, `blocks[${index}].html`)
+      ensureText(block.html, `blocks[${index}].html`)
       return block as Block
     case 'cta-banner':
-      ensureString(block.title, `blocks[${index}].title`)
-      ensureString(block.action?.label, `blocks[${index}].action.label`)
-      ensureString(block.action?.to, `blocks[${index}].action.to`)
+      ensureText(block.title, `blocks[${index}].title`)
+      ensureText(block.action?.label, `blocks[${index}].action.label`)
+      ensureText(block.action?.to, `blocks[${index}].action.to`)
       return block as Block
     case 'stats':
       ensureString(block.title, `blocks[${index}].title`)
       ensureArray(block.items, `blocks[${index}].items`)
       return block as Block
     case 'contact':
-      ensureString(block.title, `blocks[${index}].title`)
+      ensureText(block.title, `blocks[${index}].title`)
       return block as Block
     default:
       throw new Error(`Unsupported block type: ${block.type}`)
