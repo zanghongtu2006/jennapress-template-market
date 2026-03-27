@@ -1,10 +1,10 @@
 <template>
   <div class="container saas-stage-intro">
-    <div class="saas-template-badge">Template · SaaS Landing</div>
-    <h2 class="saas-stage-title">Neon product marketing look built on the same content schema</h2>
+    <h2 class="saas-stage-title">A static-first Nuxt CMS starter built on a unified content schema</h2>
     <p class="saas-stage-copy">
-      The page keeps the same blocks and data contract, but the visual language changes to a much stronger
-      technology style with dark surfaces, glowing accents, and a more dramatic landing-page rhythm.
+      JennaPress helps teams build company websites and landing pages with reusable content models, switchable templates, 
+      and AI-friendly generation workflows. It is designed for fast static deployment, consistent rendering, 
+      and flexible visual customization on top of the same data contract.
     </p>
   </div>
 </template>
