@@ -18,8 +18,8 @@ nav:
   - label: Blog
     to: /blog
 footerText: Static-first, multilingual, and template-driven by design.
-contactEmail: hello@example.com
+contactEmail: zanghongtu2006@gmail.com
 socialLinks:
   - label: GitHub
-    to: https://github.com
+    to: https://github.com/zanghongtu2006/JennaPress
 ---
