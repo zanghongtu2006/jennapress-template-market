@@ -10,6 +10,7 @@
     "preview": "nuxt preview"
   },
   "dependencies": {
+    "@nuxtjs/sitemap": "^8.0.8",
     "gray-matter": "^4.0.3",
     "markdown-it": "^14.1.0",
     "nuxt": "^3.17.0"
