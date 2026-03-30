@@ -5,7 +5,7 @@ summary: Página de inicio de Jenna Press
 seo:
   title: Jenna Press | Un framework de contenido static-first
   description: Jenna Press es un framework multilingüe static-first para sitios de proyecto, páginas tipo documentación y publicación de blogs.
-  canonical: https://example.com/
+  canonical: https://www.jennapress.com/
 blocks:
   - type: hero
     kicker: Jenna Press

@@ -12,7 +12,7 @@ author:
 seo:
   title: How to Add a New Page or Post | Jenna Press
   description: Add pages and posts by following the existing content contract.
-  canonical: https://example.com/blog/usage/how-to-add-a-new-page-or-post
+  canonical: https://www.jennapress.com/blog/usage/how-to-add-a-new-page-or-post
 bodyTitle: Use the existing content contract before inventing a new one
 bodyBlocks:
   - type: cta-banner

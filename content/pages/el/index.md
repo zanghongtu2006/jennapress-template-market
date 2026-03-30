@@ -5,7 +5,7 @@ summary: Αρχική σελίδα του Jenna Press
 seo:
   title: Jenna Press | Ένα static-first πλαίσιο περιεχομένου
   description: Το Jenna Press είναι ένα static-first πολυγλωσσικό πλαίσιο για project sites, σελίδες τύπου τεκμηρίωσης και δημοσίευση blog.
-  canonical: https://example.com/
+  canonical: https://www.jennapress.com/
 blocks:
   - type: hero
     kicker: Jenna Press

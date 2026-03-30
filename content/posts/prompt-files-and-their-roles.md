@@ -12,7 +12,7 @@ author:
 seo:
   title: Prompt Files and Their Roles | Jenna Press
   description: Learn how the repository’s prompt files support template creation and content maintenance.
-  canonical: https://example.com/blog/project/prompt-files-and-their-roles
+  canonical: https://www.jennapress.com/blog/project/prompt-files-and-their-roles
 bodyTitle: Prompt files should reduce ambiguity, not create it
 bodyBlocks:
   - type: cta-banner

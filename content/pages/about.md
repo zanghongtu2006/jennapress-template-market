@@ -6,7 +6,7 @@ bodyTitle: Why this project was started
 seo:
   title: About | Jenna Press
   description: Learn the background, motivation, and scope of Jenna Press.
-  canonical: https://example.com/about
+  canonical: https://www.jennapress.com/about
 blocks:
   - type: feature-grid
     title: The background behind Jenna Press

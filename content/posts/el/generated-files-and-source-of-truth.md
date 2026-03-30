@@ -12,7 +12,7 @@ author:
 seo:
   title: Generated files και πηγή αλήθειας | Jenna Press
   description: Κατανοήστε γιατί υπάρχουν generated files και πώς να τα χειρίζεστε με ασφάλεια.
-  canonical: https://example.com/blog/project/generated-files-and-source-of-truth
+  canonical: https://www.jennapress.com/blog/project/generated-files-and-source-of-truth
 bodyTitle: Το generated επιτρέπεται, αλλά δεν είναι επεξεργάσιμη αλήθεια
 bodyBlocks:
   - type: cta-banner

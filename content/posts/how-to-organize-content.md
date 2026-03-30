@@ -12,7 +12,7 @@ author:
 seo:
   title: How to Organize Content | Jenna Press
   description: Organize pages and blog content in a way that matches Jenna Press project boundaries.
-  canonical: https://example.com/blog/usage/how-to-organize-content
+  canonical: https://www.jennapress.com/blog/usage/how-to-organize-content
 bodyTitle: Keep official pages stable and let the blog carry expansion
 bodyBlocks:
   - type: cta-banner

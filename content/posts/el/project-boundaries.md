@@ -12,7 +12,7 @@ author:
 seo:
   title: Όρια του έργου | Jenna Press
   description: Μάθετε τι αποκλείει το Jenna Press από τον σχεδιασμό και γιατί αυτό το κρατά συντηρήσιμο.
-  canonical: https://example.com/blog/project/project-boundaries
+  canonical: https://www.jennapress.com/blog/project/project-boundaries
 bodyTitle: Ένα χρήσιμο πλαίσιο χρειάζεται κανόνες αποκλεισμού
 bodyBlocks:
   - type: cta-banner

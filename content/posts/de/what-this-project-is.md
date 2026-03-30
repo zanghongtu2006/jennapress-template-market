@@ -12,7 +12,7 @@ author:
 seo:
   title: Was dieses Projekt ist | Jenna Press
   description: Verstehen, was Jenna Press leisten soll und warum der Umfang bewusst fokussiert bleibt.
-  canonical: https://example.com/blog/project/what-this-project-is
+  canonical: https://www.jennapress.com/blog/project/what-this-project-is
 bodyTitle: Ein fokussiertes Framework mit klarer Aufgabe
 bodyBlocks:
   - type: cta-banner

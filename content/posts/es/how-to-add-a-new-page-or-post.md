@@ -12,7 +12,7 @@ author:
 seo:
   title: Cómo añadir una nueva página o entrada | Jenna Press
   description: Añade páginas y entradas siguiendo el contrato de contenido existente.
-  canonical: https://example.com/blog/usage/how-to-add-a-new-page-or-post
+  canonical: https://www.jennapress.com/blog/usage/how-to-add-a-new-page-or-post
 bodyTitle: Usa primero el contrato de contenido existente antes de inventar uno nuevo
 bodyBlocks:
   - type: cta-banner

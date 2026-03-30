@@ -12,7 +12,7 @@ author:
 seo:
   title: Current Support Status | Jenna Press
   description: A realistic status report for the current Jenna Press feature boundary.
-  canonical: https://example.com/blog/project/current-support-status
+  canonical: https://www.jennapress.com/blog/project/current-support-status
 bodyTitle: Stable enough for focused project sites
 bodyBlocks:
   - type: cta-banner

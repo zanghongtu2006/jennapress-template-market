@@ -12,7 +12,7 @@ author:
 seo:
   title: Project Boundaries | Jenna Press
   description: Learn what Jenna Press excludes by design and why that keeps it maintainable.
-  canonical: https://example.com/blog/project/project-boundaries
+  canonical: https://www.jennapress.com/blog/project/project-boundaries
 bodyTitle: A useful framework needs exclusion rules
 bodyBlocks:
   - type: cta-banner

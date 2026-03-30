@@ -6,7 +6,7 @@ bodyTitle: Project rules that protect the framework
 seo:
   title: Principles | Jenna Press
   description: Read the core rules that define Jenna Press as a static-first multilingual framework.
-  canonical: https://example.com/principles
+  canonical: https://www.jennapress.com/principles
 blocks:
   - type: feature-grid
     title: Core principles

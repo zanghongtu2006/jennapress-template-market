@@ -12,7 +12,7 @@ author:
 seo:
   title: Deployment and Maintenance Guide | Jenna Press
   description: Deployment and maintenance recommendations for Jenna Press sites.
-  canonical: https://example.com/blog/usage/deployment-and-maintenance-guide
+  canonical: https://www.jennapress.com/blog/usage/deployment-and-maintenance-guide
 bodyTitle: Publishing is part of the framework contract
 bodyBlocks:
   - type: cta-banner

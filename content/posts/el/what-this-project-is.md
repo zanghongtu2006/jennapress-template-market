@@ -12,7 +12,7 @@ author:
 seo:
   title: Τι είναι αυτό το έργο | Jenna Press
   description: Κατανοήστε για τι έχει σχεδιαστεί το Jenna Press και γιατί παραμένει σκόπιμα περιορισμένο.
-  canonical: https://example.com/blog/project/what-this-project-is
+  canonical: https://www.jennapress.com/blog/project/what-this-project-is
 bodyTitle: Ένα περιορισμένο πλαίσιο με σαφή αποστολή
 bodyBlocks:
   - type: cta-banner
@@ -26,4 +26,4 @@ bodyBlocks:
 
 Η προβλεπόμενη χρήση είναι απλή: κρατήστε το περιεχόμενο σε markdown, κρατήστε τα templates σε template directories και κρατήστε προβλέψιμους τους κανόνες του framework. Όταν αυτά τα όρια παραμένουν ορατά, ένας μικρός ιστότοπος μπορεί να παραμείνει εύκολος στη δημοσίευση και εύκολος στην εξέλιξη.
 
-Γι’ αυτό το έργο διατηρεί μόνο δύο κατηγορίες blog από προεπιλογή: **Project** για την κατανόηση του ίδιου του framework και **Usage** για το πώς να δουλεύει κανείς με αυτό.
+Γι' αυτό το έργο διατηρεί μόνο δύο κατηγορίες blog από προεπιλογή: **Project** για την κατανόηση του ίδιου του framework και **Usage** για το πώς να δουλεύει κανείς με αυτό.

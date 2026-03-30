@@ -12,7 +12,7 @@ author:
 seo:
   title: Wie ein Template sicher angepasst wird | Jenna Press
   description: Ein sicherer Workflow zur Template-Anpassung in Jenna Press.
-  canonical: https://example.com/blog/usage/how-to-customize-a-template-safely
+  canonical: https://www.jennapress.com/blog/usage/how-to-customize-a-template-safely
 bodyTitle: Visuelle Freiheit ist nur nützlich, wenn der Framework-Vertrag intakt bleibt
 bodyBlocks:
   - type: cta-banner

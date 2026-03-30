@@ -12,7 +12,7 @@ author:
 seo:
   title: Κανόνες theme και γλώσσας | Jenna Press
   description: Διαβάστε τους κανόνες που κρατούν προβλέψιμη τη συμπεριφορά theme και γλώσσας.
-  canonical: https://example.com/blog/usage/theme-and-language-rules
+  canonical: https://www.jennapress.com/blog/usage/theme-and-language-rules
 bodyTitle: Η persistence πρέπει να φαίνεται σταθερή και βαρετή
 bodyBlocks:
   - type: cta-banner

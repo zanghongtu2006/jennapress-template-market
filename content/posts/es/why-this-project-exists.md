@@ -12,7 +12,7 @@ author:
 seo:
   title: Por qué existe este proyecto | Jenna Press
   description: Lee la motivación detrás de Jenna Press y por qué importan los límites static-first.
-  canonical: https://example.com/blog/project/why-this-project-exists
+  canonical: https://www.jennapress.com/blog/project/why-this-project-exists
 bodyTitle: De la complejidad accidental de vuelta a un contrato claro
 bodyBlocks:
   - type: cta-banner

@@ -12,7 +12,7 @@ author:
 seo:
   title: Warum dieses Projekt existiert | Jenna Press
   description: Die Motivation hinter Jenna Press und warum static-first Grenzen wichtig sind.
-  canonical: https://example.com/blog/project/why-this-project-exists
+  canonical: https://www.jennapress.com/blog/project/why-this-project-exists
 bodyTitle: Von versehentlicher Komplexität zurück zu einem klaren Vertrag
 bodyBlocks:
   - type: cta-banner

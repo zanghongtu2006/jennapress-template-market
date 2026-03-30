@@ -12,7 +12,7 @@ author:
 seo:
   title: Wie eine neue Seite oder ein neuer Post angelegt wird | Jenna Press
   description: Seiten und Posts durch Befolgen des bestehenden Content-Vertrags hinzufügen.
-  canonical: https://example.com/blog/usage/how-to-add-a-new-page-or-post
+  canonical: https://www.jennapress.com/blog/usage/how-to-add-a-new-page-or-post
 bodyTitle: Zuerst den bestehenden Content-Vertrag nutzen, statt einen neuen zu erfinden
 bodyBlocks:
   - type: cta-banner

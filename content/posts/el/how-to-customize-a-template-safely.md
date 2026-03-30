@@ -12,7 +12,7 @@ author:
 seo:
   title: Πώς να προσαρμόσετε με ασφάλεια ένα template | Jenna Press
   description: Μια ασφαλής ροή προσαρμογής template για το Jenna Press.
-  canonical: https://example.com/blog/usage/how-to-customize-a-template-safely
+  canonical: https://www.jennapress.com/blog/usage/how-to-customize-a-template-safely
 bodyTitle: Η οπτική ελευθερία είναι χρήσιμη μόνο όταν το συμβόλαιο του πλαισίου μένει άθικτο
 bodyBlocks:
   - type: cta-banner

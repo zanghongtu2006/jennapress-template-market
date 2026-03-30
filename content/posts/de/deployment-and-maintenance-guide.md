@@ -12,7 +12,7 @@ author:
 seo:
   title: Deployment- und Wartungsleitfaden | Jenna Press
   description: Empfehlungen für Deployment und Wartung von Jenna-Press-Websites.
-  canonical: https://example.com/blog/usage/deployment-and-maintenance-guide
+  canonical: https://www.jennapress.com/blog/usage/deployment-and-maintenance-guide
 bodyTitle: Publishing ist Teil des Framework-Vertrags
 bodyBlocks:
   - type: cta-banner

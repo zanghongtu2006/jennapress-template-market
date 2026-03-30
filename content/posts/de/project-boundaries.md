@@ -12,7 +12,7 @@ author:
 seo:
   title: Projektgrenzen | Jenna Press
   description: Verstehen, was Jenna Press bewusst ausschließt und warum das die Wartbarkeit schützt.
-  canonical: https://example.com/blog/project/project-boundaries
+  canonical: https://www.jennapress.com/blog/project/project-boundaries
 bodyTitle: Ein nützliches Framework braucht Ausschlussregeln
 bodyBlocks:
   - type: cta-banner

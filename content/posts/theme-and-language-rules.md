@@ -12,7 +12,7 @@ author:
 seo:
   title: Theme and Language Rules | Jenna Press
   description: Read the rules that keep theme and language behavior predictable.
-  canonical: https://example.com/blog/usage/theme-and-language-rules
+  canonical: https://www.jennapress.com/blog/usage/theme-and-language-rules
 bodyTitle: Persistence should feel stable and boring
 bodyBlocks:
   - type: cta-banner

@@ -12,7 +12,7 @@ author:
 seo:
   title: Theme- und Sprachregeln | Jenna Press
   description: Die Regeln, die Theme- und Sprachverhalten vorhersagbar halten.
-  canonical: https://example.com/blog/usage/theme-and-language-rules
+  canonical: https://www.jennapress.com/blog/usage/theme-and-language-rules
 bodyTitle: Persistenz sollte stabil und unspektakulär wirken
 bodyBlocks:
   - type: cta-banner

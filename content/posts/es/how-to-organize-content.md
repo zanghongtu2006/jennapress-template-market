@@ -12,7 +12,7 @@ author:
 seo:
   title: Cómo organizar el contenido | Jenna Press
   description: Organiza páginas y contenido del blog de una forma que respete los límites del proyecto Jenna Press.
-  canonical: https://example.com/blog/usage/how-to-organize-content
+  canonical: https://www.jennapress.com/blog/usage/how-to-organize-content
 bodyTitle: Mantén estables las páginas oficiales y deja que el blog cargue con la expansión
 bodyBlocks:
   - type: cta-banner

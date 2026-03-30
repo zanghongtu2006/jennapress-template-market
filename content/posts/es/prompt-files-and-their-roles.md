@@ -12,7 +12,7 @@ author:
 seo:
   title: Archivos prompt y sus roles | Jenna Press
   description: Aprende cómo los archivos prompt del repositorio apoyan la creación de plantillas y el mantenimiento del contenido.
-  canonical: https://example.com/blog/project/prompt-files-and-their-roles
+  canonical: https://www.jennapress.com/blog/project/prompt-files-and-their-roles
 bodyTitle: Los archivos prompt deben reducir la ambigüedad, no crearla
 bodyBlocks:
   - type: cta-banner

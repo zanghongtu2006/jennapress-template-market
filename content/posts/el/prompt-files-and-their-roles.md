@@ -12,7 +12,7 @@ author:
 seo:
   title: Prompt files και οι ρόλοι τους | Jenna Press
   description: Μάθετε πώς τα prompt files του αποθετηρίου υποστηρίζουν τη δημιουργία templates και τη συντήρηση περιεχομένου.
-  canonical: https://example.com/blog/project/prompt-files-and-their-roles
+  canonical: https://www.jennapress.com/blog/project/prompt-files-and-their-roles
 bodyTitle: Τα prompt files πρέπει να μειώνουν την ασάφεια, όχι να τη δημιουργούν
 bodyBlocks:
   - type: cta-banner

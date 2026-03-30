@@ -12,7 +12,7 @@ author:
 seo:
   title: Aktueller Unterstützungsgrad | Jenna Press
   description: Ein realistischer Statusbericht zur aktuellen Funktionsgrenze von Jenna Press.
-  canonical: https://example.com/blog/project/current-support-status
+  canonical: https://www.jennapress.com/blog/project/current-support-status
 bodyTitle: Stabil genug für fokussierte Projektwebsites
 bodyBlocks:
   - type: cta-banner
