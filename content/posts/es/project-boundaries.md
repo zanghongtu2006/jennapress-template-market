@@ -12,7 +12,7 @@ author:
 seo:
   title: Límites del proyecto | Jenna Press
   description: Aprende qué excluye Jenna Press por diseño y por qué eso lo mantiene mantenible.
-  canonical: https://www.jennapress.com/blog/project/project-boundaries
+  canonical: https://www.jennapress.com/blog/project/project-boundaries/
 bodyTitle: Un framework útil necesita reglas de exclusión
 bodyBlocks:
   - type: cta-banner

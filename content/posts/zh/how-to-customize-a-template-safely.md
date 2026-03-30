@@ -12,7 +12,7 @@ author:
 seo:
   title: 如何安全地修改模板 | Jenna Press
   description: 一套适用于 Jenna Press 的安全模板修改流程。
-  canonical: https://www.jennapress.com/blog/usage/how-to-customize-a-template-safely
+  canonical: https://www.jennapress.com/blog/usage/how-to-customize-a-template-safely/
 bodyTitle: 只有框架契约不被破坏，视觉自由才有意义
 bodyBlocks:
   - type: cta-banner

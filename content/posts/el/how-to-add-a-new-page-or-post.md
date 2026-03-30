@@ -12,7 +12,7 @@ author:
 seo:
   title: Πώς να προσθέσετε μια νέα σελίδα ή ανάρτηση | Jenna Press
   description: Προσθέστε σελίδες και αναρτήσεις ακολουθώντας το υπάρχον συμβόλαιο περιεχομένου.
-  canonical: https://www.jennapress.com/blog/usage/how-to-add-a-new-page-or-post
+  canonical: https://www.jennapress.com/blog/usage/how-to-add-a-new-page-or-post/
 bodyTitle: Χρησιμοποιήστε πρώτα το υπάρχον συμβόλαιο περιεχομένου πριν επινοήσετε νέο
 bodyBlocks:
   - type: cta-banner

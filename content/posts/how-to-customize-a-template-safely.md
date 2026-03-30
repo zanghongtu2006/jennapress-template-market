@@ -12,7 +12,7 @@ author:
 seo:
   title: How to Customize a Template Safely | Jenna Press
   description: A safe template customization workflow for Jenna Press.
-  canonical: https://www.jennapress.com/blog/usage/how-to-customize-a-template-safely
+  canonical: https://www.jennapress.com/blog/usage/how-to-customize-a-template-safely/
 bodyTitle: Visual freedom is useful only when the framework contract stays intact
 bodyBlocks:
   - type: cta-banner

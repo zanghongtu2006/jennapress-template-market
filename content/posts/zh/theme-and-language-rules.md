@@ -12,7 +12,7 @@ author:
 seo:
   title: Theme 与 Language 规则 | Jenna Press
   description: 阅读保证 theme 与 language 行为可预测的规则。
-  canonical: https://www.jennapress.com/blog/usage/theme-and-language-rules
+  canonical: https://www.jennapress.com/blog/usage/theme-and-language-rules/
 bodyTitle: 持久化应该稳定、克制、没有惊喜
 bodyBlocks:
   - type: cta-banner

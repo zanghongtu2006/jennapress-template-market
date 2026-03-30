@@ -12,7 +12,7 @@ author:
 seo:
   title: 如何新增页面或文章 | Jenna Press
   description: 按照现有内容契约来新增页面和文章。
-  canonical: https://www.jennapress.com/blog/usage/how-to-add-a-new-page-or-post
+  canonical: https://www.jennapress.com/blog/usage/how-to-add-a-new-page-or-post/
 bodyTitle: 先使用既有内容契约，而不是重新发明一套
 bodyBlocks:
   - type: cta-banner

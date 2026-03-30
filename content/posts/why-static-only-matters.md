@@ -12,7 +12,7 @@ author:
 seo:
   title: Why Static-Only Matters | Jenna Press
   description: Understand why static-only delivery improves clarity, SEO, and long-term maintenance.
-  canonical: https://www.jennapress.com/blog/project/why-static-only-matters
+  canonical: https://www.jennapress.com/blog/project/why-static-only-matters/
 bodyTitle: Static delivery is a strategic decision, not a technical compromise
 bodyBlocks:
   - type: cta-banner

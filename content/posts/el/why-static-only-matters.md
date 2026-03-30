@@ -12,7 +12,7 @@ author:
 seo:
   title: Γιατί έχει σημασία το static-only | Jenna Press
   description: Κατανόησε γιατί η static-only παράδοση βελτιώνει τη σαφήνεια, το SEO και τη μακροχρόνια συντήρηση.
-  canonical: https://www.jennapress.com/blog/project/why-static-only-matters
+  canonical: https://www.jennapress.com/blog/project/why-static-only-matters/
 bodyTitle: Η static παράδοση είναι στρατηγική απόφαση, όχι τεχνικός συμβιβασμός
 bodyBlocks:
   - type: cta-banner

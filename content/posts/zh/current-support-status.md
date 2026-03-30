@@ -12,7 +12,7 @@ author:
 seo:
   title: 当前支持程度 | Jenna Press
   description: 一份关于 Jenna Press 当前功能边界的现实状态说明。
-  canonical: https://www.jennapress.com/blog/project/current-support-status
+  canonical: https://www.jennapress.com/blog/project/current-support-status/
 bodyTitle: 已经足够支撑收敛型项目网站
 bodyBlocks:
   - type: cta-banner

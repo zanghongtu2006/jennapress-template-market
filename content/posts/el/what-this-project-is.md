@@ -12,7 +12,7 @@ author:
 seo:
   title: Τι είναι αυτό το έργο | Jenna Press
   description: Κατανοήστε για τι έχει σχεδιαστεί το Jenna Press και γιατί παραμένει σκόπιμα περιορισμένο.
-  canonical: https://www.jennapress.com/blog/project/what-this-project-is
+  canonical: https://www.jennapress.com/blog/project/what-this-project-is/
 bodyTitle: Ένα περιορισμένο πλαίσιο με σαφή αποστολή
 bodyBlocks:
   - type: cta-banner

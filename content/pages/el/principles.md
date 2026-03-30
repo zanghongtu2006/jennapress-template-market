@@ -6,7 +6,7 @@ bodyTitle: Κανόνες έργου που προστατεύουν το πλα
 seo:
   title: Αρχές | Jenna Press
   description: Διαβάστε τους βασικούς κανόνες που ορίζουν το Jenna Press ως static-first πολυγλωσσικό πλαίσιο.
-  canonical: https://www.jennapress.com/principles
+  canonical: https://www.jennapress.com/principles/
 blocks:
   - type: feature-grid
     title: Βασικές αρχές

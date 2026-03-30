@@ -6,7 +6,7 @@ bodyTitle: Γιατί ξεκίνησε αυτό το έργο
 seo:
   title: Σχετικά | Jenna Press
   description: Μάθετε το υπόβαθρο, τα κίνητρα και το πεδίο του Jenna Press.
-  canonical: https://www.jennapress.com/about
+  canonical: https://www.jennapress.com/about/
 blocks:
   - type: feature-grid
     title: Το υπόβαθρο πίσω από το Jenna Press

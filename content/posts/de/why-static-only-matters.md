@@ -12,7 +12,7 @@ author:
 seo:
   title: Warum static-only wichtig ist | Jenna Press
   description: Verstehen, warum static-only Klarheit, SEO und langfristige Wartbarkeit verbessert.
-  canonical: https://www.jennapress.com/blog/project/why-static-only-matters
+  canonical: https://www.jennapress.com/blog/project/why-static-only-matters/
 bodyTitle: Statische Auslieferung ist eine strategische Entscheidung, kein technischer Kompromiss
 bodyBlocks:
   - type: cta-banner

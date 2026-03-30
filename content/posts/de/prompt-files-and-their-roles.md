@@ -12,7 +12,7 @@ author:
 seo:
   title: Prompt-Dateien und ihre Rollen | Jenna Press
   description: Erfahren, wie die Prompt-Dateien des Repositories Template-Erstellung und Content-Pflege unterstützen.
-  canonical: https://www.jennapress.com/blog/project/prompt-files-and-their-roles
+  canonical: https://www.jennapress.com/blog/project/prompt-files-and-their-roles/
 bodyTitle: Prompt-Dateien sollen Unklarheit verringern, nicht erzeugen
 bodyBlocks:
   - type: cta-banner

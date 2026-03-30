@@ -12,7 +12,7 @@ author:
 seo:
   title: 生成文件与真实源头 | Jenna Press
   description: 理解生成文件为什么存在，以及应该如何正确对待它们。
-  canonical: https://www.jennapress.com/blog/project/generated-files-and-source-of-truth
+  canonical: https://www.jennapress.com/blog/project/generated-files-and-source-of-truth/
 bodyTitle: 允许生成文件存在，但它们不是真正可编辑的真源
 bodyBlocks:
   - type: cta-banner

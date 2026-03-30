@@ -12,7 +12,7 @@ author:
 seo:
   title: 项目边界 | Jenna Press
   description: 了解 Jenna Press 刻意排除的内容，以及这样做如何保护可维护性。
-  canonical: https://www.jennapress.com/blog/project/project-boundaries
+  canonical: https://www.jennapress.com/blog/project/project-boundaries/
 bodyTitle: 一个可用的框架必须有排除规则
 bodyBlocks:
   - type: cta-banner

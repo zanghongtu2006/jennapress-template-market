@@ -12,7 +12,7 @@ author:
 seo:
   title: Τρέχουσα κατάσταση υποστήριξης | Jenna Press
   description: Μια ρεαλιστική αναφορά κατάστασης για τα σημερινά όρια λειτουργιών του Jenna Press.
-  canonical: https://www.jennapress.com/blog/project/current-support-status
+  canonical: https://www.jennapress.com/blog/project/current-support-status/
 bodyTitle: Αρκετά σταθερό για εστιασμένους ιστότοπους έργων
 bodyBlocks:
   - type: cta-banner

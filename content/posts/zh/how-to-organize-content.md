@@ -12,7 +12,7 @@ author:
 seo:
   title: 如何组织内容 | Jenna Press
   description: 按照 Jenna Press 的项目边界来组织页面与博客内容。
-  canonical: https://www.jennapress.com/blog/usage/how-to-organize-content
+  canonical: https://www.jennapress.com/blog/usage/how-to-organize-content/
 bodyTitle: 让官方页面稳定，把扩展解释留给博客
 bodyBlocks:
   - type: cta-banner

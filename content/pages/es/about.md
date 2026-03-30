@@ -6,7 +6,7 @@ bodyTitle: Por qué se inició este proyecto
 seo:
   title: Acerca de | Jenna Press
   description: Conoce el contexto, la motivación y el alcance de Jenna Press.
-  canonical: https://www.jennapress.com/about
+  canonical: https://www.jennapress.com/about/
 blocks:
   - type: feature-grid
     title: El contexto detrás de Jenna Press

@@ -12,7 +12,7 @@ author:
 seo:
   title: Prompt 文件及其职责 | Jenna Press
   description: 了解仓库中的 prompt 文件如何服务于模板生成与内容维护。
-  canonical: https://www.jennapress.com/blog/project/prompt-files-and-their-roles
+  canonical: https://www.jennapress.com/blog/project/prompt-files-and-their-roles/
 bodyTitle: Prompt 文件应该减少歧义，而不是制造歧义
 bodyBlocks:
   - type: cta-banner

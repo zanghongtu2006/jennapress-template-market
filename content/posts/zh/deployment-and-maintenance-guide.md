@@ -12,7 +12,7 @@ author:
 seo:
   title: 部署与维护指南 | Jenna Press
   description: 适用于 Jenna Press 站点的部署与维护建议。
-  canonical: https://www.jennapress.com/blog/usage/deployment-and-maintenance-guide
+  canonical: https://www.jennapress.com/blog/usage/deployment-and-maintenance-guide/
 bodyTitle: 发布本身就是框架契约的一部分
 bodyBlocks:
   - type: cta-banner

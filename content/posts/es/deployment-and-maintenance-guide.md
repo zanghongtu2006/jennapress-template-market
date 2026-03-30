@@ -12,7 +12,7 @@ author:
 seo:
   title: Guía de despliegue y mantenimiento | Jenna Press
   description: Recomendaciones de despliegue y mantenimiento para sitios de Jenna Press.
-  canonical: https://www.jennapress.com/blog/usage/deployment-and-maintenance-guide
+  canonical: https://www.jennapress.com/blog/usage/deployment-and-maintenance-guide/
 bodyTitle: Publicar forma parte del contrato del framework
 bodyBlocks:
   - type: cta-banner

@@ -12,7 +12,7 @@ author:
 seo:
   title: Wie Inhalte organisiert werden | Jenna Press
   description: Inhalte so strukturieren, dass sie zu den Projektgrenzen von Jenna Press passen.
-  canonical: https://www.jennapress.com/blog/usage/how-to-organize-content
+  canonical: https://www.jennapress.com/blog/usage/how-to-organize-content/
 bodyTitle: Offizielle Seiten stabil halten und den Blog die Ausweitung tragen lassen
 bodyBlocks:
   - type: cta-banner

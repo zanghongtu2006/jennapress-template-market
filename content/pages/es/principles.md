@@ -6,7 +6,7 @@ bodyTitle: Reglas del proyecto que protegen el framework
 seo:
   title: Principios | Jenna Press
   description: Lee las reglas centrales que definen a Jenna Press como un framework multilingüe static-first.
-  canonical: https://www.jennapress.com/principles
+  canonical: https://www.jennapress.com/principles/
 blocks:
   - type: feature-grid
     title: Principios centrales

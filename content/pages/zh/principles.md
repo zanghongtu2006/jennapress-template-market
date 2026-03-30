@@ -6,7 +6,7 @@ bodyTitle: 保护这个框架的项目规则
 seo:
   title: 设计原则 | Jenna Press
   description: 阅读定义 Jenna Press 的 static-first、多语言与协作规则。
-  canonical: https://www.jennapress.com/principles
+  canonical: https://www.jennapress.com/principles/
 blocks:
   - type: feature-grid
     title: 核心原则

@@ -12,7 +12,7 @@ author:
 seo:
   title: 为什么会有这个项目 | Jenna Press
   description: 阅读 Jenna Press 的起点，以及为什么 static-first 边界如此重要。
-  canonical: https://www.jennapress.com/blog/project/why-this-project-exists
+  canonical: https://www.jennapress.com/blog/project/why-this-project-exists/
 bodyTitle: 从意外复杂度回到清晰契约
 bodyBlocks:
   - type: cta-banner

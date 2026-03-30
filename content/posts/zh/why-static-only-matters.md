@@ -12,7 +12,7 @@ author:
 seo:
   title: 为什么 static-only 很重要 | Jenna Press
   description: 理解 static-only 为什么能改善清晰度、SEO 和长期维护性。
-  canonical: https://www.jennapress.com/blog/project/why-static-only-matters
+  canonical: https://www.jennapress.com/blog/project/why-static-only-matters/
 bodyTitle: 静态交付是战略决策，不是技术上的权宜之计
 bodyBlocks:
   - type: cta-banner

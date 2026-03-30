@@ -12,7 +12,7 @@ author:
 seo:
   title: Οδηγός ανάπτυξης και συντήρησης | Jenna Press
   description: Συστάσεις ανάπτυξης και συντήρησης για ιστότοπους Jenna Press.
-  canonical: https://www.jennapress.com/blog/usage/deployment-and-maintenance-guide
+  canonical: https://www.jennapress.com/blog/usage/deployment-and-maintenance-guide/
 bodyTitle: Η δημοσίευση είναι μέρος του συμβολαίου του πλαισίου
 bodyBlocks:
   - type: cta-banner

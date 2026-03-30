@@ -12,7 +12,7 @@ author:
 seo:
   title: Archivos generados y fuente de verdad | Jenna Press
   description: Entiende por qué existen archivos generados y cómo tratarlos de forma segura.
-  canonical: https://www.jennapress.com/blog/project/generated-files-and-source-of-truth
+  canonical: https://www.jennapress.com/blog/project/generated-files-and-source-of-truth/
 bodyTitle: Lo generado está permitido, pero lo generado no es verdad editable
 bodyBlocks:
   - type: cta-banner

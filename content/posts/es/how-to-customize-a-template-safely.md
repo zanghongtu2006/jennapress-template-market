@@ -12,7 +12,7 @@ author:
 seo:
   title: Cómo personalizar una plantilla de forma segura | Jenna Press
   description: Un flujo seguro de personalización de plantillas para Jenna Press.
-  canonical: https://www.jennapress.com/blog/usage/how-to-customize-a-template-safely
+  canonical: https://www.jennapress.com/blog/usage/how-to-customize-a-template-safely/
 bodyTitle: La libertad visual solo es útil cuando el contrato del framework permanece intacto
 bodyBlocks:
   - type: cta-banner

@@ -12,7 +12,7 @@ author:
 seo:
   title: Reglas de tema e idioma | Jenna Press
   description: Lee las reglas que mantienen predecible el comportamiento de tema e idioma.
-  canonical: https://www.jennapress.com/blog/usage/theme-and-language-rules
+  canonical: https://www.jennapress.com/blog/usage/theme-and-language-rules/
 bodyTitle: La persistencia debería sentirse estable y aburrida
 bodyBlocks:
   - type: cta-banner

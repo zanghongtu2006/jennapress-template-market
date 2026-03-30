@@ -12,7 +12,7 @@ author:
 seo:
   title: What This Project Is | Jenna Press
   description: Understand what Jenna Press is designed to do and why it stays intentionally narrow.
-  canonical: https://www.jennapress.com/blog/project/what-this-project-is
+  canonical: https://www.jennapress.com/blog/project/what-this-project-is/
 bodyTitle: A narrow framework with a clear job
 bodyBlocks:
   - type: cta-banner

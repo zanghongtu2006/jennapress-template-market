@@ -12,7 +12,7 @@ author:
 seo:
   title: Qué es este proyecto | Jenna Press
   description: Entiende para qué está diseñado Jenna Press y por qué se mantiene deliberadamente acotado.
-  canonical: https://www.jennapress.com/blog/project/what-this-project-is
+  canonical: https://www.jennapress.com/blog/project/what-this-project-is/
 bodyTitle: Un framework acotado con un trabajo claro
 bodyBlocks:
   - type: cta-banner

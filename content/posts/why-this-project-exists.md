@@ -12,7 +12,7 @@ author:
 seo:
   title: Why This Project Exists | Jenna Press
   description: Read the motivation behind Jenna Press and why static-first boundaries matter.
-  canonical: https://www.jennapress.com/blog/project/why-this-project-exists
+  canonical: https://www.jennapress.com/blog/project/why-this-project-exists/
 bodyTitle: From accidental complexity back to a clear contract
 bodyBlocks:
   - type: cta-banner

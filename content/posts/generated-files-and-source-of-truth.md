@@ -12,7 +12,7 @@ author:
 seo:
   title: Generated Files and Source of Truth | Jenna Press
   description: Understand why generated files exist and how to treat them safely.
-  canonical: https://www.jennapress.com/blog/project/generated-files-and-source-of-truth
+  canonical: https://www.jennapress.com/blog/project/generated-files-and-source-of-truth/
 bodyTitle: Generated is allowed, but generated is not editable truth
 bodyBlocks:
   - type: cta-banner

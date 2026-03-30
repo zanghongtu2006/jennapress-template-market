@@ -6,7 +6,7 @@ bodyTitle: 为什么要启动这个项目
 seo:
   title: 关于项目 | Jenna Press
   description: 了解 Jenna Press 的背景、初衷与范围边界。
-  canonical: https://www.jennapress.com/about
+  canonical: https://www.jennapress.com/about/
 blocks:
   - type: feature-grid
     title: Jenna Press 背后的背景

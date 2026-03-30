@@ -152,6 +152,7 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/sitemap'],
   site: {
     url: 'https://www.jennapress.com',
+    trailingSlash: true,
   },
   sitemap: {
     hostname: 'https://www.jennapress.com',

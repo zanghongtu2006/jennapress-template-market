@@ -12,7 +12,7 @@ author:
 seo:
   title: Γιατί υπάρχει αυτό το έργο | Jenna Press
   description: Διαβάστε το κίνητρο πίσω από το Jenna Press και γιατί έχουν σημασία τα static-first όρια.
-  canonical: https://www.jennapress.com/blog/project/why-this-project-exists
+  canonical: https://www.jennapress.com/blog/project/why-this-project-exists/
 bodyTitle: Από την τυχαία πολυπλοκότητα πίσω σε ένα καθαρό συμβόλαιο
 bodyBlocks:
   - type: cta-banner

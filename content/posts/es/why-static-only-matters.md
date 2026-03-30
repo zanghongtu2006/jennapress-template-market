@@ -12,7 +12,7 @@ author:
 seo:
   title: Por qué importa static-only | Jenna Press
   description: Entiende por qué la entrega static-only mejora la claridad, el SEO y el mantenimiento a largo plazo.
-  canonical: https://www.jennapress.com/blog/project/why-static-only-matters
+  canonical: https://www.jennapress.com/blog/project/why-static-only-matters/
 bodyTitle: La entrega estática es una decisión estratégica, no un compromiso técnico
 bodyBlocks:
   - type: cta-banner

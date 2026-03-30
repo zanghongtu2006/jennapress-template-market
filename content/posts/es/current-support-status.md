@@ -12,7 +12,7 @@ author:
 seo:
   title: Estado actual del soporte | Jenna Press
   description: Un informe realista sobre el límite actual de funcionalidades de Jenna Press.
-  canonical: https://www.jennapress.com/blog/project/current-support-status
+  canonical: https://www.jennapress.com/blog/project/current-support-status/
 bodyTitle: Lo bastante estable para sitios de proyecto enfocados
 bodyBlocks:
   - type: cta-banner

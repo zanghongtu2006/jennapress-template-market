@@ -6,7 +6,7 @@ bodyTitle: Warum dieses Projekt gestartet wurde
 seo:
   title: Über das Projekt | Jenna Press
   description: Hintergrund, Motivation und Umfang von Jenna Press.
-  canonical: https://www.jennapress.com/about
+  canonical: https://www.jennapress.com/about/
 blocks:
   - type: feature-grid
     title: Der Hintergrund von Jenna Press

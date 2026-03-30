@@ -12,7 +12,7 @@ author:
 seo:
   title: 这个项目是什么 | Jenna Press
   description: 理解 Jenna Press 试图解决的问题，以及它为什么刻意保持范围收敛。
-  canonical: https://www.jennapress.com/blog/project/what-this-project-is
+  canonical: https://www.jennapress.com/blog/project/what-this-project-is/
 bodyTitle: 一个边界明确、职责清晰的框架
 bodyBlocks:
   - type: cta-banner
