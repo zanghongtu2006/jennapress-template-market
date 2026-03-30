@@ -20,7 +20,7 @@ blocks:
     panelTitle: What this project already supports
     panelLines:
       - Static page and blog publishing
-      - English as default, plus German and Chinese
+      - English as default, plus German, Chinese, Spanish, and Greek
       - Theme and language persistence in the browser
   - type: feature-grid
     title: Why this project exists
@@ -31,14 +31,14 @@ blocks:
       - title: Content-template separation
         description: Editors work mainly in markdown, while visual changes stay inside templates instead of leaking into every page file.
       - title: Multilingual by structure
-        description: English is the default version, while German and Chinese are first-class content variants rather than afterthoughts.
+        description: English is the default version, while German, Chinese, Spanish, and Greek are first-class content variants rather than afterthoughts.
   - type: stats
     title: Current support level
     description: The framework is intentionally narrow, but the supported surface is already practical for project websites.
     items:
-      - value: '3'
+      - value: '5'
         label: languages
-        note: English, German, and Chinese use the same publishing model.
+        note: English, German, Chinese, Spanish, and Greek use the same publishing model.
       - value: '2'
         label: blog categories
         note: Project and Usage keep the information architecture compact.

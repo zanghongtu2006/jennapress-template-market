@@ -20,7 +20,7 @@ blocks:
     panelTitle: Lo que este proyecto ya soporta
     panelLines:
       - Publicación de páginas y blog estáticos
-      - Inglés por defecto, además de alemán y chino
+      - Inglés por defecto, además de alemán, chino, español y griego
       - Persistencia de tema e idioma en el navegador
   - type: feature-grid
     title: Por qué existe este proyecto
@@ -31,14 +31,14 @@ blocks:
       - title: Separación entre contenido y plantilla
         description: Los editores trabajan principalmente en markdown, mientras los cambios visuales permanecen dentro de las plantillas en lugar de filtrarse a cada archivo de página.
       - title: Multilingüe por estructura
-        description: El inglés es la versión predeterminada, mientras que el alemán y el chino son variantes de contenido de primera clase y no añadidos de último momento.
+        description: El inglés es la versión predeterminada, mientras que el alemán, el chino, el español y el griego son variantes de contenido de primera clase y no añadidos de último momento.
   - type: stats
     title: Nivel actual de soporte
     description: El framework es deliberadamente acotado, pero la superficie que ya soporta es práctica para sitios de proyecto.
     items:
-      - value: '3'
+      - value: '5'
         label: idiomas
-        note: Inglés, alemán y chino usan el mismo modelo de publicación.
+        note: Inglés, alemán, chino, español y griego usan el mismo modelo de publicación.
       - value: '2'
         label: categorías del blog
         note: Project y Usage mantienen compacta la arquitectura de información.

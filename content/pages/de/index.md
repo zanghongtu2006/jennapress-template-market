@@ -20,7 +20,7 @@ blocks:
     panelTitle: Was das Projekt bereits unterstützt
     panelLines:
       - Statische Seiten- und Blog-Veröffentlichung
-      - Englisch als Standard sowie Deutsch und Chinesisch
+      - Englisch als Standard sowie Deutsch, Chinesisch, Spanisch und Griechisch
       - Theme- und Sprachpersistenz im Browser
   - type: feature-grid
     title: Warum dieses Projekt existiert
@@ -31,14 +31,14 @@ blocks:
       - title: Trennung von Content und Template
         description: Redakteure arbeiten überwiegend in Markdown, während visuelle Änderungen in den Templates bleiben.
       - title: Mehrsprachigkeit mit Struktur
-        description: Englisch ist die Standardversion, Deutsch und Chinesisch sind vollwertige Inhaltsvarianten statt nachträglicher Ergänzungen.
+        description: Englisch ist die Standardversion, Deutsch, Chinesisch, Spanisch und Griechisch sind vollwertige Inhaltsvarianten statt nachträglicher Ergänzungen.
   - type: stats
     title: Aktueller Unterstützungsgrad
     description: Das Framework ist bewusst fokussiert, aber für Projektwebsites bereits praktisch nutzbar.
     items:
-      - value: '3'
+      - value: '5'
         label: Sprachen
-        note: Englisch, Deutsch und Chinesisch folgen demselben Publishing-Modell.
+        note: Englisch, Deutsch, Chinesisch, Spanisch und Griechisch folgen demselben Publishing-Modell.
       - value: '2'
         label: Blog-Kategorien
         note: Project und Usage halten die Informationsarchitektur kompakt.

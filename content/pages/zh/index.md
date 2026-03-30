@@ -20,7 +20,7 @@ blocks:
     panelTitle: 当前已经支持的内容
     panelLines:
       - 静态页面与博客发布
-      - 英语默认，外加德语与中文
+      - 英语默认，外加德语、中文、西班牙语和希腊语
       - 浏览器内 theme 与语言记忆
   - type: feature-grid
     title: 为什么会有这个项目
@@ -31,14 +31,14 @@ blocks:
       - title: 内容与模板分离
         description: 内容编辑主要在 markdown 中完成，视觉变化留在模板里，而不是渗透到每一个页面文件。
       - title: 多语言从结构层设计
-        description: 英语是默认版本，德语和中文是同等级内容版本，而不是事后补丁。
+        description: 英语是默认版本，德语、中文、西班牙语和希腊语是同等级内容版本，而不是事后补丁。
   - type: stats
     title: 当前支持程度
     description: 这个框架有意保持边界收敛，但对项目官网来说已经具备实用性。
     items:
-      - value: '3'
+      - value: '5'
         label: 语言版本
-        note: 英语、德语、中文采用同一套发布模型。
+        note: 英语、德语、中文、西班牙语、希腊语采用同一套发布模型。
       - value: '2'
         label: 博客类目
         note: Project 与 Usage 让信息结构保持紧凑。
