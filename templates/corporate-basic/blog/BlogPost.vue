@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { computed } from 'vue'
 import type { BlogPostContent, SiteConfig } from '~/types'
 import blogConfig from './blog.config'
