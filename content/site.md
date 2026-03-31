@@ -1,6 +1,7 @@
 ---
 name: Jenna Press
 logoText: JP
+siteUrl: https://www.jennapress.com
 defaultTemplate: saas-landing
 defaultTheme: dark
 themes:

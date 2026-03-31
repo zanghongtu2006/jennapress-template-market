@@ -151,11 +151,11 @@ export default defineNuxtConfig({
   css: ['~/assets/main.css'],
   modules: ['@nuxtjs/sitemap'],
   site: {
-    url: 'https://www.jennapress.com',
+    url: readFrontMatter(path.resolve(process.cwd(), 'content/site.md')).siteUrl || '',
     trailingSlash: true,
   },
   sitemap: {
-    hostname: 'https://www.jennapress.com',
+    hostname: readFrontMatter(path.resolve(process.cwd(), 'content/site.md')).siteUrl || '',
   },
 
   hooks: {
@@ -272,7 +272,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      siteBaseUrl: 'https://www.jennapress.com/',
+      siteBaseUrl: '',
       supportedLocales: SUPPORTED_LOCALES
     }
   },
