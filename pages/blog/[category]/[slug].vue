@@ -12,6 +12,8 @@ const locale = computed(() => {
   const value = Array.isArray(route.params.locale) ? route.params.locale[0] : route.params.locale
   return typeof value === 'string' && isSecondaryLocale(value) ? value : DEFAULT_LOCALE
 })
+const config = useRuntimeConfig()
+const baseUrl = computed(() => config.public.baseUrl ? `/${config.public.baseUrl}` : '')
 
 const { data: siteData, error: siteError } = await useSite(locale)
 const site = computed(() => siteData.value)
@@ -48,6 +50,7 @@ useHead(() => ({
       mode="post"
       :post="post"
       :locale="locale"
+      :baseUrl="baseUrl"
     />
   </TemplateFrameRenderer>
 </template>

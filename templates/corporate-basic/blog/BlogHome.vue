@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { BlogCategory, BlogPostSummary, SiteConfig } from '~/types'
-defineProps<{ site: SiteConfig; categories: BlogCategory[]; sections: Array<{ category: BlogCategory; posts: BlogPostSummary[] }> }>()
+const props = defineProps<{ site: SiteConfig; locale?: string; baseUrl?: string; categories: BlogCategory[]; sections: Array<{ category: BlogCategory; posts: BlogPostSummary[] }> }>()
+const p = (path: string) => `${props.baseUrl || ''}${props.locale ? `/${props.locale}` : ''}${path}`
 </script>
 
 <template>
@@ -10,8 +11,8 @@ defineProps<{ site: SiteConfig; categories: BlogCategory[]; sections: Array<{ ca
       <h1 class="template-blog-title">Category-first company blog</h1>
       <p class="template-blog-description">This blog is controlled by markdown content and the active template. Category sections can use different visual styles without changing route files.</p>
       <nav class="template-blog-tabs" aria-label="Blog categories">
-        <NuxtLink to="/blog" class="template-blog-tab is-active">All</NuxtLink>
-        <NuxtLink v-for="item in categories" :key="item.slug" :to="`/blog/${item.slug}`" class="template-blog-tab">{{ item.label }}</NuxtLink>
+        <NuxtLink :to="p('/blog')" class="template-blog-tab is-active">All</NuxtLink>
+        <NuxtLink v-for="item in categories" :key="item.slug" :to="p(`/blog/${item.slug}`)" class="template-blog-tab">{{ item.label }}</NuxtLink>
       </nav>
     </section>
 
@@ -21,7 +22,7 @@ defineProps<{ site: SiteConfig; categories: BlogCategory[]; sections: Array<{ ca
           <div class="hero-kicker">{{ section.category.label }}</div>
           <h2 class="template-category-title">{{ section.category.listTitle }}</h2>
         </div>
-        <NuxtLink :to="`/blog/${section.category.slug}`" class="btn btn-secondary">Open {{ section.category.label }}</NuxtLink>
+        <NuxtLink :to="p(`/blog/${section.category.slug}`)" class="btn btn-secondary">Open {{ section.category.label }}</NuxtLink>
       </div>
       <p class="template-category-description">{{ section.category.description }}</p>
       <div class="template-post-grid">
@@ -30,7 +31,7 @@ defineProps<{ site: SiteConfig; categories: BlogCategory[]; sections: Array<{ ca
             <span class="template-post-pill">{{ post.categoryMeta.label }}</span>
             <span class="template-post-date">{{ new Date(post.publishedAt).toLocaleDateString('en-CA') }}</span>
           </div>
-          <h3 class="template-post-card-title"><NuxtLink :to="`/blog/${post.categoryMeta.slug}/${post.slug}`">{{ post.title }}</NuxtLink></h3>
+          <h3 class="template-post-card-title"><NuxtLink :to="p(`/blog/${post.categoryMeta.slug}/${post.slug}`)">{{ post.title }}</NuxtLink></h3>
           <p class="template-post-card-summary">{{ post.summary }}</p>
         </article>
       </div>

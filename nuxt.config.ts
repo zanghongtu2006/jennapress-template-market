@@ -273,7 +273,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       siteBaseUrl: 'https://www.jennapress.com/',
-      supportedLocales: SUPPORTED_LOCALES
+      supportedLocales: SUPPORTED_LOCALES,
+      baseUrl: 'JennaPress'
     }
   },
   typescript: {
