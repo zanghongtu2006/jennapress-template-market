@@ -47,6 +47,7 @@ useHead(() => ({
       :site="site"
       mode="post"
       :post="post"
+      :locale="locale"
     />
   </TemplateFrameRenderer>
 </template>

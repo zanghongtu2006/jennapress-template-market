@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import type { BlogCategory, BlogPostSummary, SiteConfig } from '~/types'
 import blogConfig from './blog.config'
 
-const props = defineProps<{ site: SiteConfig; categories: BlogCategory[]; category: BlogCategory | null; posts: BlogPostSummary[] }>()
+const props = defineProps<{ site: SiteConfig; locale?: string; categories: BlogCategory[]; category: BlogCategory | null; posts: BlogPostSummary[] }>()
 
 const activeComponent = computed(() => {
   const key = props.category?.accent || 'default'
@@ -12,5 +12,5 @@ const activeComponent = computed(() => {
 </script>
 
 <template>
-  <component :is="activeComponent" :site="site" :categories="categories" :category="category" :posts="posts" />
+  <component :is="activeComponent" :site="site" :locale="locale" :categories="categories" :category="category" :posts="posts" />
 </template>

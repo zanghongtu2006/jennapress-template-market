@@ -7,6 +7,7 @@ const props = defineProps<{
   template: string
   site: SiteConfig
   mode: 'home' | 'category' | 'post'
+  locale?: string
   categories?: BlogCategory[]
   category?: BlogCategory | null
   posts?: BlogPostSummary[]
@@ -21,6 +22,7 @@ const activeComponent = computed(() => resolveBlogComponent(props.template || 'c
   <component
     :is="activeComponent"
     :site="site"
+    :locale="locale"
     :categories="categories || []"
     :category="category || null"
     :posts="posts || []"

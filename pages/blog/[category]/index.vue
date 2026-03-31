@@ -54,6 +54,7 @@ useSeoMeta({
       :categories="categories"
       :category="categoryMeta"
       :posts="posts"
+      :locale="locale"
     />
   </TemplateFrameRenderer>
 </template>

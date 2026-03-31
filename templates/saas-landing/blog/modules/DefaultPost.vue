@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import type { BlogPostContent, SiteConfig } from '~/types'
-defineProps<{ site: SiteConfig; post: BlogPostContent | null }>()
+const props = defineProps<{ site: SiteConfig; locale?: string; post: BlogPostContent | null }>()
+const p = (path: string) => props.locale ? `/${props.locale}${path}` : path
 </script>
 
 <template>
   <article v-if="post" class="page-stack template-blog template-blog-saas">
     <header class="container section-card saas-blog-hero template-post-hero" :class="`is-${post.categoryMeta.slug}`">
       <div class="template-breadcrumbs">
-        <NuxtLink to="/blog">Blog</NuxtLink>
+        <NuxtLink :to="p('/blog')">Blog</NuxtLink>
         <span>/</span>
-        <NuxtLink :to="`/blog/${post.categoryMeta.slug}`">{{ post.categoryMeta.label }}</NuxtLink>
+        <NuxtLink :to="p(`/blog/${post.categoryMeta.slug}`)">{{ post.categoryMeta.label }}</NuxtLink>
       </div>
       <span class="template-post-pill">{{ post.categoryMeta.label }}</span>
       <h1 class="template-blog-title">{{ post.title }}</h1>

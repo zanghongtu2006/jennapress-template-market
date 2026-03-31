@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { BlogCategory, BlogPostSummary, SiteConfig } from '~/types'
-defineProps<{ site: SiteConfig; categories: BlogCategory[]; category: BlogCategory | null; posts: BlogPostSummary[] }>()
+const props = defineProps<{ site: SiteConfig; locale?: string; categories: BlogCategory[]; category: BlogCategory | null; posts: BlogPostSummary[] }>()
+const p = (path: string) => props.locale ? `/${props.locale}${path}` : path
 </script>
 
 <template>
@@ -10,15 +11,15 @@ defineProps<{ site: SiteConfig; categories: BlogCategory[]; category: BlogCatego
       <h1 class="template-blog-title">{{ category.listTitle }}</h1>
       <p class="template-blog-description">{{ category.description }}</p>
       <nav class="template-blog-tabs" aria-label="Blog categories">
-        <NuxtLink to="/blog" class="template-blog-tab">All modules</NuxtLink>
-        <NuxtLink v-for="item in categories" :key="item.slug" :to="`/blog/${item.slug}`" class="template-blog-tab" :class="{ 'is-active': item.slug === category.slug }">{{ item.label }}</NuxtLink>
+        <NuxtLink :to="p('/blog')" class="template-blog-tab">All modules</NuxtLink>
+        <NuxtLink v-for="item in categories" :key="item.slug" :to="p(`/blog/${item.slug}`)" class="template-blog-tab" :class="{ 'is-active': item.slug === category.slug }">{{ item.label }}</NuxtLink>
       </nav>
     </section>
 
     <section class="container template-post-grid template-post-grid-full">
       <article v-for="post in posts" :key="`${post.categoryMeta.slug}:${post.slug}`" class="section-card template-post-card saas-post-card" :class="`is-${post.categoryMeta.slug}`">
         <span class="template-post-pill">{{ post.categoryMeta.label }}</span>
-        <h2 class="template-post-card-title"><NuxtLink :to="`/blog/${post.categoryMeta.slug}/${post.slug}`">{{ post.title }}</NuxtLink></h2>
+        <h2 class="template-post-card-title"><NuxtLink :to="p(`/blog/${post.categoryMeta.slug}/${post.slug}`)">{{ post.title }}</NuxtLink></h2>
         <p class="template-post-card-summary">{{ post.summary }}</p>
       </article>
     </section>
