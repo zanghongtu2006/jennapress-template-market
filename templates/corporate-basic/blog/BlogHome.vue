@@ -26,7 +26,7 @@ const p = (path) => (props.locale && props.locale !== props.defaultLocale) ? ('/
 
         <NuxtLink :to="p('/blog')" class="template-blog-tab is-active">All</NuxtLink>
 
-        <NuxtLink v-for="item in categories" :key="item.slug" :to="`/blog/${item.slug}`" class="template-blog-tab">{{ item.label }}</NuxtLink>
+        <NuxtLink v-for="item in categories" :key="item.slug" :to="p(`/blog/${item.slug}`)" class="template-blog-tab">{{ item.label }}</NuxtLink>
 
       </nav>
 

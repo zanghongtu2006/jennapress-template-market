@@ -8,7 +8,7 @@ import blogConfig from './blog.config'
 
 
 
-const props = defineProps<{ site: SiteConfig; categories: BlogCategory[]; category: BlogCategory | null; posts: BlogPostSummary[] }>()
+const props = defineProps<{ site: SiteConfig; categories: BlogCategory[]; category: BlogCategory | null; posts: BlogPostSummary[]; locale?: string; defaultLocale?: string }>()
 
 
 
