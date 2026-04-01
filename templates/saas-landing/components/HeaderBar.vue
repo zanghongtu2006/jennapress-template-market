@@ -4,12 +4,15 @@ import LanguageSelect from '~/templates/saas-landing/components/LanguageSelect.v
 import ThemeSelect from '~/templates/saas-landing/components/ThemeSelect.vue'
 
 defineProps<{ site: SiteConfig }>()
+
+const { app } = useRuntimeConfig()
+const base = computed(() => app.baseURL.replace(/\/$/, ''))
 </script>
 
 <template>
   <header class="template-saas-header">
     <div class="container template-saas-header-inner">
-      <NuxtLink to="/" class="template-saas-brand">
+      <NuxtLink :to="base + '/'" class="template-saas-brand">
         <span class="template-saas-brand-mark">{{ site.logoText }}</span>
         <span>{{ site.name }}</span>
       </NuxtLink>

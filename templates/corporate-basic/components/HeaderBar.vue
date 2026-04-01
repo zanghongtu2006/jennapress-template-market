@@ -2,12 +2,15 @@
 import type { SiteConfig } from '~/types'
 
 defineProps<{ site: SiteConfig }>()
+
+const { app } = useRuntimeConfig()
+const base = computed(() => app.baseURL.replace(/\/$/, ''))
 </script>
 
 <template>
   <header class="template-corporate-basic-header">
     <div class="container template-corporate-basic-header-inner">
-      <NuxtLink to="/" class="template-corporate-basic-brand">
+      <NuxtLink :to="base + '/'" class="template-corporate-basic-brand">
         <span class="template-corporate-basic-brand-mark">{{ site.logoText }}</span>
         <span>{{ site.name }}</span>
       </NuxtLink>
