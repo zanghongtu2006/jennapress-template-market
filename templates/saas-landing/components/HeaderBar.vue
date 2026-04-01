@@ -5,13 +5,12 @@ import ThemeSelect from '~/templates/saas-landing/components/ThemeSelect.vue'
 
 defineProps<{ site: SiteConfig }>()
 
-const SECONDARY_LOCALES = ['de', 'zh', 'es', 'el']
-
 const localeHome = computed(() => {
-  if (typeof window === 'undefined') return '/'
-  const path = window.location.pathname
-  const lang = SECONDARY_LOCALES.find(l => path.startsWith('/' + l + '/') || path === '/' + l)
-  return lang ? '/' + lang : '/'
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('site-language')
+    if (saved) return '/' + saved
+  }
+  return '/'
 })
 </script>
 
