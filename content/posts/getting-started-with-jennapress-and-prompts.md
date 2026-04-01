@@ -1,4 +1,4 @@
----
+﻿---
 slug: getting-started-with-jennapress-and-prompts
 title: How to Set Up a JennaPress Website with GitHub Fork + AI Prompts
 summary: Even if you have zero coding experience, you can build and maintain a complete multilingual website with JennaPress using nothing more than GitHub and ChatGPT.
@@ -46,11 +46,11 @@ Once forked, you have a fully independent copy that you can modify directly in y
 
 In your forked repository root, locate these two files:
 
-**CONTENT_PROMPT_EN.md** — tells AI how to write website content: page structure, how to write blog posts, how to handle multilingual content, and how to fill in SEO fields.
+**CONTENT_PROMPT_EN.md** 鈥?tells AI how to write website content: page structure, how to write blog posts, how to handle multilingual content, and how to fill in SEO fields.
 
-**TEMPLATE_PROMPT_EN.md** — tells AI how to generate and modify site templates: how template files are organized, how to write the Header component, and how theme CSS works.
+**TEMPLATE_PROMPT_EN.md** 鈥?tells AI how to generate and modify site templates: how template files are organized, how to write the Header component, and how theme CSS works.
 
-These two files act as the "translator" between you and the AI. You do not need to read and understand them fully — you just need to tell AI to "work according to these rules."
+These two files act as the "translator" between you and the AI. You do not need to read and understand them fully 鈥?you just need to tell AI to "work according to these rules."
 
 ## Step 3: Generate Website Content with AI
 
@@ -86,16 +86,16 @@ Then describe the visual style you want, such as "modern minimalist, for a tech 
 
 JennaPress has a strict directory structure. AI is only allowed to modify:
 
-- `content/` — all content files
-- `templates/<template-name>/` — template files
-- `public/template-assets/<template-name>/` — template assets
+- `content/` 鈥?all content files
+- `templates/<template-name>/` 鈥?template files
+- `public/template-assets/<template-name>/` 鈥?template assets
 
 AI must **never** modify:
 
-- `components/` — shared CMS components
-- `pages/` — route definitions
-- `composables/` — shared logic
-- `lib/` — core processing logic
+- `components/` 鈥?shared CMS components
+- `pages/` 鈥?route definitions
+- `composables/` 鈥?shared logic
+- `lib/` 鈥?core processing logic
 
 If AI-generated output touches these directories, tell it directly: "Do not modify components or pages directories. Only generate content and template files."
 
