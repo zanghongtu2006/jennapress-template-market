@@ -1,17 +1,14 @@
 <script setup lang="ts">
-
 import type { BlogCategory, BlogPostSummary, SiteConfig } from '~/types'
 
 const props = defineProps<{ site: SiteConfig; categories: BlogCategory[]; sections: Array<{ category: BlogCategory; posts: BlogPostSummary[] }>; locale?: string; defaultLocale?: string }>()
 
-const p = (path) => (props.locale && props.locale !== props.defaultLocale) ? ('/' + props.locale + path) : path
-
+const p = (path: string) =>
+  (props.locale && props.locale !== props.defaultLocale) ? ('/' + props.locale + path) : path
 </script>
 
 
-
 <template>
-
   <div class="page-stack template-blog template-blog-saas">
 
     <section class="container section-card saas-blog-hero">
@@ -26,12 +23,11 @@ const p = (path) => (props.locale && props.locale !== props.defaultLocale) ? ('/
 
         <NuxtLink :to="p('/blog')" class="template-blog-tab is-active">All modules</NuxtLink>
 
-        <NuxtLink v-for="item in categories" :key="item.slug" :to="`/blog/${item.slug}`" class="template-blog-tab">{{ item.label }}</NuxtLink>
+        <NuxtLink v-for="item in categories" :key="item.slug" :to="p(`/blog/${item.slug}`)" class="template-blog-tab">{{ item.label }}</NuxtLink>
 
       </nav>
 
     </section>
-
 
 
     <section v-for="section in sections" :key="section.category.slug" class="container saas-category-wrap" :class="`is-${section.category.slug}`">
@@ -69,6 +65,4 @@ const p = (path) => (props.locale && props.locale !== props.defaultLocale) ? ('/
     </section>
 
   </div>
-
 </template>
-

@@ -271,16 +271,12 @@ function getPageMapForLocale(locale: SupportedLocale) {
 function getPostMapForLocale(locale: SupportedLocale) {
   const map = new Map<string, PostContent>()
 
-  for (const [, raw] of getLocalizedModuleEntries(postModules, 'posts', DEFAULT_LOCALE)) {
+  // Only load posts that exist in the requested locale — no fallback to DEFAULT_LOCALE.
+  // If a post has no version in this locale, it does not appear here.
+  const sourceLocale = locale === DEFAULT_LOCALE ? DEFAULT_LOCALE : locale
+  for (const [, raw] of getLocalizedModuleEntries(postModules, 'posts', sourceLocale)) {
     const post = readPostFile(raw)
     map.set(normalizePostSlug(post.slug), post)
-  }
-
-  if (locale !== DEFAULT_LOCALE) {
-    for (const [, raw] of getLocalizedModuleEntries(postModules, 'posts', locale)) {
-      const post = readPostFile(raw)
-      map.set(normalizePostSlug(post.slug), post)
-    }
   }
 
   return map

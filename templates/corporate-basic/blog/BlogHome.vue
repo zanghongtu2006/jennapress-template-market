@@ -1,17 +1,14 @@
 <script setup lang="ts">
-
 import type { BlogCategory, BlogPostSummary, SiteConfig } from '~/types'
 
 const props = defineProps<{ site: SiteConfig; categories: BlogCategory[]; sections: Array<{ category: BlogCategory; posts: BlogPostSummary[] }>; locale?: string; defaultLocale?: string }>()
 
-const p = (path) => (props.locale && props.locale !== props.defaultLocale) ? ('/' + props.locale + path) : path
-
+const p = (path: string) =>
+  (props.locale && props.locale !== props.defaultLocale) ? ('/' + props.locale + path) : path
 </script>
 
 
-
 <template>
-
   <div class="page-stack template-blog template-blog-corporate">
 
     <section class="container section-card template-blog-hero">
@@ -31,7 +28,6 @@ const p = (path) => (props.locale && props.locale !== props.defaultLocale) ? ('/
       </nav>
 
     </section>
-
 
 
     <section v-for="section in sections" :key="section.category.slug" class="container section-card template-category-block" :class="`is-${section.category.slug}`">
@@ -75,6 +71,4 @@ const p = (path) => (props.locale && props.locale !== props.defaultLocale) ? ('/
     </section>
 
   </div>
-
 </template>
-

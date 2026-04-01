@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { BlogPostContent, SiteConfig } from '~/types'
+
 const props = defineProps<{ site: SiteConfig; post: BlogPostContent | null; locale?: string; defaultLocale?: string }>()
-const p = (path) => (props.locale && props.locale !== props.defaultLocale) ? ('/' + props.locale + path) : path
+
+const p = (path: string) =>
+  (props.locale && props.locale !== props.defaultLocale) ? ('/' + props.locale + path) : path
 </script>
 
 <template>
