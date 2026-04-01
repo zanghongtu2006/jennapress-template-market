@@ -1,312 +1,444 @@
-# AI Prompt for Generating a Nuxt Site Kit Template
+# Template Generation Prompt (English)
 
-Use this prompt when asking an AI coding assistant to generate a **new site template** for the current Nuxt Site Kit CMS project.
+Use this prompt when asking an AI to generate, extend, or modify a **site template** for JennaPress CMS.
 
-This prompt is designed for the current project architecture. The AI should generate output that can be dropped into the project with minimal or no manual restructuring.
-
----
-
-## Prompt
-
-You are generating a **production-oriented template package** for an existing Nuxt-based static-first CMS called **Nuxt Site Kit CMS**.
-
-Your task is **not** to generate a standalone website from scratch.  
-Your task is to generate a **template implementation that fits the existing project conventions exactly**.
-
-The project already has a stable framework layer. Future users should mainly edit:
-
-- `content/*`
-- `templates/<template-name>/*`
-- `public/template-assets/<template-name>/*`
-
-So your output must follow the current template conventions and must not redesign the framework.
+JennaPress is a static-first, multilingual, template-driven Nuxt CMS. This prompt tells the AI exactly how templates work, what files to produce, what rules to follow, and what is strictly forbidden.
 
 ---
 
-## Project assumptions
+## System Overview
 
-The CMS works like this:
+### Directory Boundaries (ABSOLUTE — AI Must Not Violate)
 
-### Content layer
-- `content/site.md` stores site-level settings such as `defaultTemplate`
-- `content/pages/*.md` stores general pages
-- `content/posts/*.md` stores blog posts
-- all content is Markdown-based
-
-### Routing layer
-The route system already exists and should not be changed:
-
-- `/` -> homepage
-- `/<slug>` -> general page
-- `/blog` -> blog home
-- `/blog/:category` -> category page
-- `/blog/:category/:slug` -> post detail page
-
-There is no `/blog/:slug`.
-
-### Template layer
-Each template lives in:
-
-- `templates/<template-name>/`
-- `public/template-assets/<template-name>/`
-
-A template should provide:
-
-- `TemplateShell.vue`
-- `blog/BlogHome.vue`
-- `blog/BlogCategory.vue`
-- `blog/BlogPost.vue`
-- `blog/blog.config.ts`
-- `blog/modules/*`
-- `template.css`
-
-The active template is selected through:
-
-```yaml
-defaultTemplate: "<template-name>"
+```
+project-root/
+├── templates/        ← template package lives here
+├── public/
+│   └── template-assets/  ← template-specific assets only
+├── content/         ← all site content (markdown)
+├── components/      ← shared CMS components (DO NOT MODIFY)
+├── pages/           ← route definitions (DO NOT MODIFY)
+├── composables/     ← shared logic (DO NOT MODIFY)
+├── lib/             ← core processing logic (DO NOT MODIFY)
+├── types/           ← TypeScript interfaces (DO NOT MODIFY)
+└── assets/          ← global CSS / themes (ask before touching)
 ```
 
-in `content/site.md`.
+**AI rule: Never touch `components/`, `pages/`, `composables/`, `lib/`, `types/`, or `assets/` unless the user explicitly asks.**
+
+AI may freely work in: `templates/<template-name>/`, `public/template-assets/<template-name>/`, and `content/`.
 
 ---
 
-## Category-module rule
+## Template Package Structure
 
-This CMS uses `category` not only as content taxonomy, but also as a **module-template selector**.
+A complete template lives in `templates/<template-name>/`:
 
-That means:
+```
+templates/<template-name>/
+├── Template.vue          ← page-level template (receives PageContent, renders blocks)
+├── Frame.vue             ← outer shell (header + slot + footer)
+├── template.css          ← all template CSS (BEM naming)
+├── template.meta.json     ← template metadata
+└── blog/
+    ├── BlogHome.vue      ← /blog page template
+    ├── BlogCategory.vue  ← /blog/:category template
+    ├── BlogPost.vue      ← /blog/:category/:slug template
+    ├── blog.config.ts    ← category → module mapping
+    └── modules/
+        ├── DefaultCategory.vue   ← fallback category page
+        ├── DefaultPost.vue        ← fallback post page
+        ├── CasesCategory.vue      ← optional: custom category layout
+        ├── CasesPost.vue          ← optional: custom post layout
+        └── ...                   ← other custom category modules
 
-- `cases` can use one category module template
-- `products` can use another category module template
-- `events` can use another category module template
-
-The mapping must be defined inside:
-
-```ts
-templates/<template-name>/blog/blog.config.ts
+public/template-assets/<template-name>/
+└── (all image/fonts/assets specific to this template)
 ```
 
-Example structure:
+Note: There is NO `TemplateShell.vue`. The shell is split into:
+- `Frame.vue` = outer wrapper (HeaderBar + slot + FooterBar)
+- `Template.vue` = inner page renderer (receives page content and renders blocks)
+
+---
+
+## File-by-File Specification
+
+### `template.meta.json`
+
+```json
+{
+  "name": "<template-name>",
+  "version": "0.0.1",
+  "label": "Human-readable name",
+  "description": "One sentence about this template.",
+  "supportedPageTypes": ["page"],
+  "supportedBlocks": [
+    "hero",
+    "feature-grid",
+    "rich-text",
+    "cta-banner",
+    "stats",
+    "contact"
+  ]
+}
+```
+
+The `supportedBlocks` array tells the CMS which block types this template can render. Do NOT reference block types not in this list.
+
+### `Frame.vue`
+
+Frame receives `SiteConfig` as prop. It wraps every page with the site header and footer.
+
+```vue
+<script setup lang="ts">
+import type { SiteConfig } from '~/types'
+import '~/templates/<template-name>/template.css'
+import HeaderBar from '~/templates/<template-name>/components/HeaderBar.vue'
+import FooterBar from '~/templates/<template-name>/components/FooterBar.vue'
+import SectionRail from '~/templates/<template-name>/components/SectionRail.vue'
+
+defineProps<{ site: SiteConfig }>()
+</script>
+
+<template>
+  <div class="template-<template-name>-frame">
+    <HeaderBar :site="site" />
+    <SectionRail>
+      <slot />
+    </SectionRail>
+    <FooterBar :site="site" />
+  </div>
+</template>
+```
+
+The Frame is rendered by the CMS routing layer — you do NOT export it from the template package yourself.
+
+### `Template.vue`
+
+Template receives `PageContent` and renders the block stack via `<BlockRenderer>`.
+
+```vue
+<script setup lang="ts">
+import type { PageContent } from '~/types'
+import '~/templates/<template-name>/template.css'
+import PageSurface from '~/templates/<template-name>/components/PageSurface.vue'
+
+defineProps<{ page: PageContent }>()
+</script>
+
+<template>
+  <PageSurface>
+    <BlockRenderer :blocks="page.blocks" />
+  </PageSurface>
+</template>
+```
+
+### `HeaderBar.vue`
+
+HeaderBar is the most critical component for multilingual sites. It MUST implement locale-aware logo navigation.
+
+**Required pattern — copy exactly:**
+
+```vue
+<script setup lang="ts">
+import type { SiteConfig } from '~/types'
+
+defineProps<{ site: SiteConfig }>()
+
+const localeHome = computed(() => {
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('site-language')
+    if (saved) return '/' + saved
+  }
+  return '/'
+})
+</script>
+
+<template>
+  <header class="template-<template-name>-header">
+    <div class="container template-<template-name>-header-inner">
+      <!-- Logo: MUST use :href="localeHome" to preserve user language -->
+      <a :href="localeHome" class="template-<template-name>-brand">
+        <span class="template-<template-name>-brand-mark">{{ site.logoText }}</span>
+        <span>{{ site.name }}</span>
+      </a>
+      <!-- Navigation -->
+      <nav>
+        <NuxtLink v-for="item in site.nav" :key="item.to" :to="item.to">
+          {{ item.label }}
+        </NuxtLink>
+      </nav>
+    </div>
+  </header>
+</template>
+```
+
+**Critical rules for HeaderBar:**
+- Logo MUST use `<a :href="localeHome">`, NOT `<NuxtLink to="/">`
+- `localeHome` MUST read from `localStorage.getItem('site-language')` and prefix with `/` if set
+- If the logo links to `/` instead of the locale-aware path, clicking it resets the user's language to English
+- The nav items come from `site.nav` and already include the locale prefix — pass them through directly
+
+### `FooterBar.vue`
+
+```vue
+<script setup lang="ts">
+import type { SiteConfig } from '~/types'
+import OpenSourceFooterAttribution from '~/components/shared/OpenSourceFooterAttribution.vue'
+
+defineProps<{ site: SiteConfig }>()
+</script>
+
+<template>
+  <footer class="template-<template-name>-footer">
+    <div class="container template-<template-name>-footer-inner">
+      <div class="template-<template-name>-footer-private">
+        <div>
+          <strong>{{ site.name }}</strong>
+          <div>{{ site.footerText }}</div>
+        </div>
+        <div v-if="site.contactEmail">
+          Contact: <a :href="`mailto:${site.contactEmail}`">{{ site.contactEmail }}</a>
+        </div>
+      </div>
+      <div class="template-<template-name>-footer-public">
+        <OpenSourceFooterAttribution />
+      </div>
+    </div>
+  </footer>
+</template>
+```
+
+### `SectionRail.vue`
+
+SectionRail is a simple full-width container that centers and pads content. It MUST exist in every template. See existing templates for reference or create a minimal one.
+
+```vue
+<template>
+  <main class="template-<template-name>-main">
+    <slot />
+  </main>
+</template>
+```
+
+### `PageSurface.vue`
+
+PageSurface wraps the main content area with the `page-stack` class.
+
+```vue
+<template>
+  <div class="page-stack">
+    <slot />
+  </div>
+</template>
+```
+
+### `blog/blog.config.ts`
+
+Maps blog categories to Vue components.
 
 ```ts
+import BlogHome from './BlogHome.vue'
+import DefaultCategory from './modules/DefaultCategory.vue'
+import DefaultPost from './modules/DefaultPost.vue'
+// import custom category modules as needed
+
 export default {
   home: BlogHome,
   categoryTemplates: {
     default: DefaultCategory,
-    cases: CasesCategory,
-    products: ProductsCategory,
-    events: EventsCategory
+    // 'case-study': CasesCategory,
+    // 'product-note': ProductsCategory,
   },
   postTemplates: {
     default: DefaultPost,
-    cases: CasesPost,
-    products: ProductsPost,
-    events: EventsPost
+    // 'case-study': CasesPost,
   }
 }
 ```
 
-Do not hardcode all category rendering logic into one giant component.
+Rules:
+- Always provide `default` in both `categoryTemplates` and `postTemplates`
+- Unmapped categories fall back to `default`
+- Categories come from post `category` field, slugified (lowercased, spaces → hyphens)
 
----
+### Blog Components
 
-## Input sources you may receive
+Blog components receive these props:
+- `BlogHome.vue`: `site: SiteConfig`, `categories: BlogCategory[]`, `sections: Array<{ category: BlogCategory, posts: BlogPostSummary[] }>`, `locale?: string`, `defaultLocale?: string`
+- `BlogCategory.vue`: `site: SiteConfig`, `category: BlogCategory`, `posts: BlogPostSummary[]`, `locale?: string`, `defaultLocale?: string`
+- `BlogPost.vue`: `site: SiteConfig`, `post: BlogPostContent`, `locale?: string`, `defaultLocale?: string`
 
-The user may provide any of the following as input:
+Locale prefix helper in blog components:
 
-- a written business description
-- a structured requirements list
-- a landing-page brief
-- an existing HTML page
-- a design screenshot
-- a Figma export description
-- a wireframe image
-- multiple content sections with intended hierarchy
-
-You must convert that input into a template package that fits this CMS.
-
----
-
-## Your output target
-
-Generate a new template named:
-
-```text
-<template-name>
+```ts
+const props = defineProps<{ ...; locale?: string; defaultLocale?: string }>()
+const p = (path: string) =>
+  (props.locale && props.locale !== props.defaultLocale)
+    ? ('/' + props.locale + path)
+    : path
 ```
 
-Your output must be organized around these files:
+Use `p('/blog')` to generate locale-prefixed links within blog components.
 
-```text
-templates/<template-name>/
-  TemplateShell.vue
-  template.css
-  blog/
-    BlogHome.vue
-    BlogCategory.vue
-    BlogPost.vue
-    blog.config.ts
-    modules/
-      DefaultCategory.vue
-      DefaultPost.vue
-      CasesCategory.vue
-      CasesPost.vue
-      ProductsCategory.vue
-      ProductsPost.vue
-      EventsCategory.vue
-      EventsPost.vue
+---
 
-public/template-assets/<template-name>/
-  (placeholder asset paths only if necessary)
+## CSS Naming Convention (BEM)
+
+All template CSS uses BEM naming with template prefix:
+
+```css
+.template-<template-name> { }                    /* Block */
+.template-<template-name>-frame { }             /* Element: frame */
+.template-<template-name>-header { }            /* Element: header */
+.template-<template-name>-header-inner { }      /* Element: header inner */
+.template-<template-name>-brand { }              /* Element: brand */
+.template-<template-name>-brand--active { }     /* Modifier: brand active state */
+.template-<template-name>-nav { }                /* Element: nav */
+.template-blog { }                              /* Block: blog shared */
+.template-blog-hero { }                         /* Element: blog hero */
+.template-post-card { }                         /* Block: post card */
+.template-post-card--featured { }              /* Modifier: featured card */
 ```
 
-If some modules are not needed, still provide a clear default fallback structure.
+CSS file must be imported in both `Frame.vue` and `Template.vue`.
 
 ---
 
-## Rendering rules you must follow
+## Theme System
 
-### 1. Keep the framework untouched
-Do not redesign:
-- route structure
-- API structure
-- content schema
-- generic page framework
+Themes work via CSS custom properties on `document.documentElement`.
 
-Only generate the template layer.
+**Available themes** are defined in `content/site.md` under `themes: []`. The user's selected theme is stored in `localStorage` under `site-theme`.
 
-### 2. Keep template code self-contained
-All visual decisions should be inside:
-- `TemplateShell.vue`
-- `template.css`
-- `blog/*`
-- `blog/modules/*`
+**How themes work:**
+- `localStorage.getItem('site-theme')` → theme name string
+- The CMS injects `<html data-theme="dark">` (or whatever the value is) before the page renders
+- Your CSS must define all color values as CSS variables scoped to `[data-theme="..."]`
 
-### 3. Keep category-specific rendering modular
-If `cases`, `products`, and `events` require different visual structures, create separate module components and register them in `blog.config.ts`.
+```css
+/* Light theme */
+[data-theme="light"] {
+  --primary: #3b82f6;
+  --background: #ffffff;
+  --text: #1e293b;
+}
 
-### 4. Use default fallbacks
-Always provide:
-- `DefaultCategory.vue`
-- `DefaultPost.vue`
+/* Dark theme */
+[data-theme="dark"] {
+  --primary: #60a5fa;
+  --background: #0f172a;
+  --text: #f1f5f9;
+}
 
-So unmapped categories still render correctly.
-
-### 5. Respect static-first principles
-Do not add unnecessary runtime complexity.
-Do not depend on a CMS backend.
-Do not introduce client-only data fetching for basic rendering.
-
-### 6. Keep content-driven rendering
-Assume all actual page and post content comes from Markdown files.
-Your template should render structured content cleanly, not hardcode business copy.
-
-### 7. Allow asset replacement
-Use asset paths that can be replaced through:
-
-```text
-/public/template-assets/<template-name>/
+/* Pink theme */
+[data-theme="pink"] {
+  --primary: #ec4899;
+  --background: #fdf2f8;
+  --text: #831843;
+}
 ```
 
-### 8. Prefer maintainability over cleverness
-Do not generate over-engineered abstractions.
-Use readable Vue components and simple styles.
+Template components reference these variables:
+
+```css
+background: var(--background);
+color: var(--text);
+border-color: var(--border);
+```
+
+**ThemeSelect component** is provided by the CMS (in `components/shared/`). You do NOT need to build it. Your template CSS must support whatever themes the site.md declares.
 
 ---
 
-## What to infer from user requirements
+## Available Block Types
 
-When converting the user's design or brief into a template, infer and define:
+These are registered in `BlockRenderer.vue` globally. You can use any of these in page content's `bodyBlocks` front matter:
 
-- homepage hero structure
-- section rhythm and spacing
-- card/list style
-- typography hierarchy
-- CTA style
-- footer style
-- blog home style
-- blog category style
-- post detail style
-- category-specific module differences if needed
+| Block Type | Front Matter Fields |
+|---|---|
+| `hero` | `kicker`, `title`, `description`, `primaryAction: {label, to}`, `secondaryAction: {label, to}`, `panelTitle`, `panelLines[]` |
+| `feature-grid` | `title`, `description?`, `items: Array<{title, description}>` |
+| `rich-text` | `title?`, `html` (raw HTML string) |
+| `cta-banner` | `title`, `description?`, `action: {label, to}` |
+| `stats` | `title`, `description?`, `items: Array<{value, label, note?}>` |
+| `contact` | `title`, `description?`, `email?`, `phone?`, `address?` |
 
-If the input implies multiple content module types, map them to blog categories when appropriate.
+**Important:** Markdown body content in blog posts is NOT a block type. Blog post body is rendered separately from the block system. Use `rich-text` block only for structured page content.
 
 ---
 
-## Expected output format
+## Multilingual Routing Rules
 
-Your answer must be implementation-oriented and ready for integration.
+JennaPress uses URL-based locale routing:
+- English (default): no prefix — `/`, `/about`, `/blog`
+- Other locales: `/de/`, `/zh/`, `/es/`, `/el/` — `/de/about`, `/zh/blog`
 
-Return:
+Locale list comes from `content/l18n.ts`. The routing is handled by `nuxt.config.ts` pages hook. You do NOT need to manually add locale routes.
 
-1. a short explanation of the chosen visual system
-2. the full file tree
-3. full code for each required file
-4. any assumptions clearly stated
-5. no unrelated marketing explanation
-6. no framework redesign proposal unless explicitly requested
-
-When outputting code, prefer complete files instead of snippets.
-
----
-
-## Quality rules
-
-The generated template must be:
-
-- clean
-- realistic
-- easy to modify
-- suitable for company websites
-- aligned with the Nuxt Site Kit CMS template contract
-- usable with minimal manual adjustment
-
-Avoid output that requires the user to manually reorganize all files afterward.
+**In template components:**
+- Props already include `locale?: string` and `defaultLocale?: string`
+- Use the `p('/path')` helper to generate locale-prefixed links
+- Navigation links from `site.nav` are NOT locale-prefixed — the CMS adds them per page route
+- The HeaderBar logo link MUST use locale-aware logic (see HeaderBar section above)
 
 ---
 
-## If the user provides HTML
+## Category-to-Module Mapping
 
-If the user gives an existing HTML page:
+`category` field in post front matter → slugified → matched in `blog.config.ts`.
 
-- preserve the visual intent
-- convert repeated structures into reusable Vue template sections
-- move theme styling into `template.css`
-- adapt the layout into the Nuxt Site Kit template structure
-- do not simply paste raw HTML without restructuring
+Example: `category: Case Study` → slugified to `case-study` → looks up `categoryTemplates['case-study']`.
 
----
+If no mapping exists for a category, `default` is used.
 
-## If the user provides an image or screenshot
-
-If the user provides a screenshot or mockup:
-
-- infer layout blocks and section hierarchy
-- recreate the visual style in Vue + CSS
-- keep assets replaceable
-- generate a maintainable approximation instead of pixel-perfect spaghetti code
+The category also determines which `postTemplates` variant is used for rendering the post detail page.
 
 ---
 
-## If the user provides only a verbal brief
+## What AI Must NOT Do
 
-If the user gives only a text description:
-
-- infer a professional company-site structure
-- produce a reasonable homepage + blog template system
-- use restrained, editable defaults
-- do not leave major template files blank
+1. **Do NOT rename or restructure framework files** — `components/`, `pages/`, `composables/`, `lib/`, `types/` are locked.
+2. **Do NOT add new block types** — block types are registered globally in `components/BlockRenderer.vue`. Ask the user before extending the block system.
+3. **Do NOT use `<NuxtLink to="/">` for the logo** — this breaks locale persistence. Always use the locale-aware `localeHome` pattern.
+4. **Do NOT hardcode business copy** — all content must come from Markdown front matter.
+5. **Do NOT introduce runtime data fetching** for basic page rendering — this is a static-first CMS.
+6. **Do NOT create JavaScript code blocks in content markdown** — Nitro's prerender esbuild process cannot parse `return` statements inside ```javascript blocks in markdown, causing build failures. Avoid emitting JS code blocks in blog post body content.
+7. **Do NOT put theme logic in JavaScript** — themes are pure CSS custom properties set via the `data-theme` attribute.
+8. **Do NOT import from `~/components/` inside template files** unless it is a shared component explicitly documented as template-usable (e.g., `OpenSourceFooterAttribution`).
 
 ---
 
-## Final instruction
+## Input Types the AI May Receive
 
-Generate the template so that a future user only needs to:
+The user may provide:
+- Business description → infer professional company site structure
+- Structured requirements list → map to template components and blocks
+- Landing page brief → generate `Template.vue` + blocks
+- Existing HTML → preserve visual intent, restructure into template components
+- Design screenshot → infer layout blocks, recreate in Vue + CSS
+- Figma export description → same as above
+- Wireframe → same as above
 
-- switch `defaultTemplate`
-- upload assets to `public/template-assets/<template-name>/`
-- edit Markdown under `content/`
+The AI converts all of these into a template package under `templates/<template-name>/`.
 
-and does **not** need to rewrite route pages or restructure the project.
+---
 
-Now generate the full template package.
+## Output Format Required
+
+For every template generation request, return:
+
+1. Visual system summary (1-2 sentences)
+2. Complete file tree
+3. Full code for every required file (no snippets)
+4. Any assumptions stated explicitly
+5. No marketing copy or framework redesign proposals
+
+Code must be production-ready and drop-in compatible with the JennaPress template contract.
+
+---
+
+## Activation
+
+When the user says something like "generate a template", "create a new template", or "add a template", prepend this full prompt to the request and hand it to the AI.
