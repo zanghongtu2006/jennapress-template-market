@@ -195,7 +195,7 @@ export default defineNuxtConfig({
     }
   },
   app: {
-    baseURL: '/',
+    baseURL: process.env.NUXT_PUBLIC_BASE_URL || '/',
     head: {
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' }
@@ -216,7 +216,7 @@ export default defineNuxtConfig({
     var languageKey = 'site-language'
     var defaultLocale = 'en'
     var secondaryLocales = ${JSON.stringify(SECONDARY_LOCALES)}
-    var baseURL = '/'
+    var baseURL = '${process.env.NUXT_PUBLIC_BASE_URL || '/'}'
     var defaultTheme = '${defaultTheme}'
 
     var applyTheme = function (value) {
