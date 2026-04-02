@@ -11,11 +11,8 @@ blocks:
     title: Find your template
     description: Browse available JennaPress templates below. Each template is a complete site you can copy, customize, and publish under your own URL.
     primaryAction:
-      label: Submit a template
-      to: /blog/project/submit-a-template
-    secondaryAction:
-      label: How it works
-      to: /blog/project/how-template-market-works
+      label: How to submit a template
+      to: /submit
     panelTitle: How to use
     panelLines:
       - Browse templates below
@@ -33,4 +30,4 @@ blocks:
 ---
 This page lists all templates currently available in the JennaPress Template Market. Each template is a complete site repository you can copy and deploy.
 
-To submit your own template, read the [submission guide](/blog/project/submit-a-template).
+To submit your own template, see the submission guide.

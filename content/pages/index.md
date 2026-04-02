@@ -1,7 +1,7 @@
 ---
 slug: /
 title: Home
-summary: Find the perfect JennaPress template for your project.
+summary: Find and deploy the perfect JennaPress template for your project.
 seo:
   title: JennaPress Template Market | Ready-to-deploy site templates
   description: Browse and deploy professional JennaPress templates for blogs, landing pages, documentation, and more.
@@ -13,9 +13,6 @@ blocks:
     primaryAction:
       label: Browse templates
       to: /templates
-    secondaryAction:
-      label: How it works
-      to: /blog/project/how-template-market-works
     panelTitle: What's included
     panelLines:
       - Multilingual by default
@@ -45,15 +42,9 @@ blocks:
       - value: "0"
         label: server required
         note: Pure static hosting. GitHub Pages, Netlify, or any CDN.
-  - type: cta-banner
-    title: Have a template to share
-    description: Built something with JennaPress? The submission guide walks you through publishing your template to the market.
-    action:
-      label: Read submission guide
-      to: /blog/project/submit-a-template
 ---
 JennaPress Template Market is a place to find, share, and deploy site templates built for the JennaPress CMS.
 
 Every template in this market is a complete JennaPress site package. You can copy it, customize the content, and publish under your own GitHub Pages URL — with your own domain name if you want.
 
-The market itself is also a JennaPress site. Browse the templates page to see what is currently available.
+Browse the templates page to see what is currently available.
