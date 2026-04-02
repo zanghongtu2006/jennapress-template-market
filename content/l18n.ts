@@ -6,5 +6,4 @@ export type LocaleConfig = {
 
 export const locales: LocaleConfig[] = [
   { code: 'en', label: 'English', isDefault: true },
-  { code: 'zh', label: '中文' },
 ]
