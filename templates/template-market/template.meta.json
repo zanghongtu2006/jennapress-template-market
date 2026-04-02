@@ -1,9 +1,0 @@
-{
-  "name": "template-market",
-  "version": "0.0.1",
-  "label": "Template Market",
-  "description": "A clean template market layout for showcasing JennaPress templates. Dark tech aesthetic with card-based template browsing.",
-  "supportedPageTypes": ["page"],
-  "supportedBlocks": ["hero", "feature-grid", "rich-text", "cta-banner", "stats", "contact"],
-  "themes": ["dark", "light", "pink"]
-}

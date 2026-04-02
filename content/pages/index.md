@@ -1,40 +1,64 @@
 ---
 slug: /
 title: Home
-summary: Browse and deploy JennaPress templates. Find the perfect solution for your project.
+summary: Jenna Press homepage
 seo:
-  title: JennaPress Template Market | Ready-to-Deploy Website Templates
-  description: A curated collection of JennaPress website templates covering blog, enterprise, affiliate, and content scenarios.
+  title: Jenna Press | A static-first content framework
+  description: Jenna Press is a static-first multilingual framework for project sites, documentation-style pages, and blog publishing.
+  canonical: https://www.jennapress.com/
 blocks:
   - type: hero
-    kicker: JennaPress Template Market
-    title: Beautiful templates, ready to deploy
-    description: Find the perfect JennaPress template for your project. Pick one, deploy to GitHub Pages, and ship today.
+    kicker: Jenna Press
+    title: A static-first framework for project websites that need clear structure and fast delivery
+    description: Jenna Press separates content, templates, and framework rules so a small team can publish multilingual sites without turning a simple website into a server-heavy application.
     primaryAction:
-      label: Browse Templates
-      to: /templates
-    panelTitle: What's included
+      label: Read the blog
+      to: /blog
+    secondaryAction:
+      label: About the project
+      to: /about
+    panelTitle: What this project already supports
     panelLines:
-      - Multilingual support out of the box
-      - One-click theme switching
-      - Static deployment, no server needed
+      - Static page and blog publishing
+      - English as default, plus German, Chinese, Spanish, and Greek
+      - Theme and language persistence in the browser
   - type: feature-grid
-    title: Four scenarios
-    description: Whether you are a personal blogger, a corporate team, an e-commerce seller, or a content creator — there is a template for you.
+    title: Why this project exists
+    description: Jenna Press was created for teams that want a reliable static publishing workflow instead of a vague all-in-one CMS promise.
     items:
-      - title: Blog
-        description: Personal and technical blogs with clean typography, fast loading, and multilingual support.
-        to: /category/blog
-      - title: Enterprise
-        description: Corporate websites and landing pages with professional design for companies and startups.
-        to: /category/enterprise
-      - title: Affiliate
-        description: E-commerce and multi-product sites to publish catalogs and drive conversions.
-        to: /category/affiliate
-      - title: Content
-        description: Novel sites, video platforms, and media built for content-heavy experiences.
-        to: /category/content
+      - title: Static-first delivery
+        description: The project is designed for pure static deployment, strong SEO, and low operational complexity.
+      - title: Content-template separation
+        description: Editors work mainly in markdown, while visual changes stay inside templates instead of leaking into every page file.
+      - title: Multilingual by structure
+        description: English is the default version, while German, Chinese, Spanish, and Greek are first-class content variants rather than afterthoughts.
+  - type: stats
+    title: Current support level
+    description: The framework is intentionally narrow, but the supported surface is already practical for project websites.
+    items:
+      - value: '5'
+        label: languages
+        note: English, German, Chinese, Spanish, and Greek use the same publishing model.
+      - value: '2'
+        label: blog categories
+        note: Project and Usage keep the information architecture compact.
+      - value: '0'
+        label: runtime APIs
+        note: The framework is static-only by project rule.
+  - type: cta-banner
+    title: Start with the official pages, then continue in the blog
+    description: Home gives the overview, About explains the background, Principles defines the rules, and the blog carries the deeper project and usage topics.
+    action:
+      label: Browse project articles
+      to: /blog/project
+bodyTitle: What Jenna Press is trying to prove
 ---
-JennaPress Template Market is a collection of JennaPress website templates for every scenario. Every template is a complete website package — copy it, customize the content, deploy to GitHub Pages, and you are live.
+Jenna Press is built around a simple claim: a project website can stay **fast, multilingual, and maintainable** without growing into a server-dependent platform.
 
-Browse the templates page to see what is currently available.
+The framework keeps three boundaries clear.
+
+- **Content** lives in markdown.
+- **Templates** control presentation.
+- **Framework rules** control routing, persistence, and validation.
+
+That separation is the reason the project can remain small while still being practical.
