@@ -12,8 +12,6 @@ tagline: Find and deploy the perfect JennaPress template for your project.
 nav:
   - label: Templates
     to: /templates
-  - label: Blog
-    to: /blog
 footerText: JennaPress Template Market. Built for builders.
 contactEmail: zanghongtu2006@gmail.com
 socialLinks:
