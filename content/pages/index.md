@@ -1,64 +1,59 @@
 ---
 slug: /
 title: Home
-summary: Jenna Press homepage
+summary: Find the perfect JennaPress template for your project.
 seo:
-  title: Jenna Press | A static-first content framework
-  description: Jenna Press is a static-first multilingual framework for project sites, documentation-style pages, and blog publishing.
-  canonical: https://www.jennapress.com/
+  title: JennaPress Template Market | Ready-to-deploy site templates
+  description: Browse and deploy professional JennaPress templates for blogs, landing pages, documentation, and more.
 blocks:
   - type: hero
-    kicker: Jenna Press
-    title: A static-first framework for project websites that need clear structure and fast delivery
-    description: Jenna Press separates content, templates, and framework rules so a small team can publish multilingual sites without turning a simple website into a server-heavy application.
+    kicker: JennaPress Template Market
+    title: Beautiful templates, ready to deploy
+    description: Browse a curated collection of JennaPress templates. Pick one, deploy it to GitHub Pages, and launch your project today.
     primaryAction:
-      label: Read the blog
-      to: /blog
+      label: Browse templates
+      to: /templates
     secondaryAction:
-      label: About the project
-      to: /about
-    panelTitle: What this project already supports
+      label: How it works
+      to: /blog/project/how-template-market-works
+    panelTitle: What's included
     panelLines:
-      - Static page and blog publishing
-      - English as default, plus German, Chinese, Spanish, and Greek
-      - Theme and language persistence in the browser
+      - Multilingual by default
+      - Theme switching in one click
+      - Static deployment, no server needed
   - type: feature-grid
-    title: Why this project exists
-    description: Jenna Press was created for teams that want a reliable static publishing workflow instead of a vague all-in-one CMS promise.
+    title: Why use a template
+    description: Instead of building from scratch, start with a proven design and customize the content.
     items:
-      - title: Static-first delivery
-        description: The project is designed for pure static deployment, strong SEO, and low operational complexity.
-      - title: Content-template separation
-        description: Editors work mainly in markdown, while visual changes stay inside templates instead of leaking into every page file.
-      - title: Multilingual by structure
-        description: English is the default version, while German, Chinese, Spanish, and Greek are first-class content variants rather than afterthoughts.
+      - title: Save weeks of work
+        description: A template gives you a complete page structure immediately. You only write the content.
+      - title: Professional design
+        description: Every template is designed to look polished and work on all screen sizes.
+      - title: Multilingual ready
+        description: English and Chinese are built in. Readers see the right language automatically.
+      - title: Static and fast
+        description: No database, no server-side rendering at runtime. Pages load fast on any host.
   - type: stats
-    title: Current support level
-    description: The framework is intentionally narrow, but the supported surface is already practical for project websites.
+    title: Template market at a glance
     items:
-      - value: '5'
+      - value: "2"
         label: languages
-        note: English, German, Chinese, Spanish, and Greek use the same publishing model.
-      - value: '2'
-        label: blog categories
-        note: Project and Usage keep the information architecture compact.
-      - value: '0'
-        label: runtime APIs
-        note: The framework is static-only by project rule.
+        note: English and Chinese, with more coming.
+      - value: "1"
+        label: template
+        note: saas-landing, with more templates on the way.
+      - value: "0"
+        label: server required
+        note: Pure static hosting. GitHub Pages, Netlify, or any CDN.
   - type: cta-banner
-    title: Start with the official pages, then continue in the blog
-    description: Home gives the overview, About explains the background, Principles defines the rules, and the blog carries the deeper project and usage topics.
+    title: Have a template to share
+    description: Built something with JennaPress? The submission guide walks you through publishing your template to the market.
     action:
-      label: Browse project articles
-      to: /blog/project
-bodyTitle: What Jenna Press is trying to prove
+      label: Read submission guide
+      to: /blog/project/submit-a-template
 ---
-Jenna Press is built around a simple claim: a project website can stay **fast, multilingual, and maintainable** without growing into a server-dependent platform.
+JennaPress Template Market is a place to find, share, and deploy site templates built for the JennaPress CMS.
 
-The framework keeps three boundaries clear.
+Every template in this market is a complete JennaPress site package. You can copy it, customize the content, and publish under your own GitHub Pages URL — with your own domain name if you want.
 
-- **Content** lives in markdown.
-- **Templates** control presentation.
-- **Framework rules** control routing, persistence, and validation.
-
-That separation is the reason the project can remain small while still being practical.
+The market itself is also a JennaPress site. Browse the templates page to see what is currently available.
