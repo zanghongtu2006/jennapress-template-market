@@ -2,12 +2,12 @@
 name: JennaPress Template Market
 logoText: JM
 siteUrl: https://zanghongtu2006.github.io/jennapress-template-market
-defaultTemplate: saas-landing
+defaultTemplate: template-market
 defaultTheme: dark
 themes:
   - dark
-  - pink
   - light
+  - pink
 tagline: Find and deploy the perfect JennaPress template for your project.
 nav:
   - label: Templates

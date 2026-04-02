@@ -2,12 +2,12 @@
 name: JennaPress 模板市场
 logoText: JM
 siteUrl: https://zanghongtu2006.github.io/jennapress-template-market
-defaultTemplate: saas-landing
+defaultTemplate: template-market
 defaultTheme: dark
 themes:
   - dark
-  - pink
   - light
+  - pink
 tagline: 为你的项目找到完美的 JennaPress 模板。
 nav:
   - label: 模板
