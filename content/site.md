@@ -1,26 +1,23 @@
 ---
-name: Jenna Press
-logoText: JP
-siteUrl: https://www.jennapress.com
-defaultTemplate: saas-landing
+name: JennaPress Template Market
+logoText: JM
+baseURL: /jennapress-template-market
+theme: dark
+defaultTemplate: template-market
 defaultTheme: dark
-themes:
-  - dark
-  - pink
-  - light
-tagline: A static-first content framework for fast multilingual sites.
+defaultPost: /blog/enterprise/saas-landing
 nav:
-  - label: Home
-    to: /
-  - label: About
-    to: /about
-  - label: Principles
-    to: /principles
-  - label: Blog
-    to: /blog
-footerText: Static-first, multilingual, and template-driven by design.
-contactEmail: zanghongtu2006@gmail.com
+  - to: /
+    label: Home
+  - to: /blog
+    label: Blog
+  - to: /about
+    label: About
+  - to: /principles
+    label: Principles
+footerText: Built for builders. MIT License.
 socialLinks:
-  - label: GitHub
-    to: https://github.com/zanghongtu2006/JennaPress
+  - platform: github
+    to: https://github.com/zanghongtu2006/jennapress-template-market
+    label: GitHub
 ---

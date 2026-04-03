@@ -1,25 +1,21 @@
 ---
-name: Jenna Press
-logoText: JP
-defaultTemplate: saas-landing
+name: JennaPress 模板市场
+logoText: JM
+baseURL: /jennapress-template-market
+theme: dark
+defaultTemplate: template-market
 defaultTheme: dark
-themes:
-  - dark
-  - pink
-  - light
-tagline: 一个面向多语言网站的 static-first 内容框架。
+defaultPost: /zh/blog/enterprise/saas-landing
 nav:
-  - label: 首页
-    to: /zh
-  - label: 关于项目
-    to: /zh/about
-  - label: 设计原则
-    to: /zh/principles
-  - label: 博客
-    to: /zh/blog
-footerText: 以静态优先、多语言与模板驱动为核心设计。
-contactEmail: hello@example.com
+  - to: /zh
+    label: 首页
+  - to: /zh/blog
+    label: 博客
+  - to: /zh/about
+    label: 关于
+footerText: 为构建者而生。MIT 协议。
 socialLinks:
-  - label: GitHub
-    to: https://github.com
+  - platform: github
+    to: https://github.com/zanghongtu2006/jennapress-template-market
+    label: GitHub
 ---
