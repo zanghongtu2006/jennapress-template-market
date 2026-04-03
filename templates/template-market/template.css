@@ -1,4 +1,4 @@
-/* ── template-market — Marketplace Style ──────────────────────────────────── */
+/* ── template-market �?Marketplace Style ──────────────────────────────────── */
 
 :root {
   --mkt-accent: #6366f1;
@@ -168,23 +168,6 @@
 }
 
 /* ── Buttons ───────────────────────────────────────────────────── */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  padding: 0 24px;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-  border: none;
-  transition: background 0.15s, transform 0.1s;
-}
-
-.btn:active { transform: scale(0.98); }
-.btn-primary { background: var(--mkt-accent); color: #fff; }
 .btn-primary:hover { background: var(--mkt-accent-hover); }
 .btn-secondary { background: var(--mkt-surface-2); color: var(--mkt-text); border: 1px solid var(--mkt-border); }
 .btn-secondary:hover { border-color: var(--mkt-accent); color: var(--mkt-accent); }
@@ -295,6 +278,7 @@
 
 /* ── Blog Components ───────────────────────────────────────────── */
 .market-blog-home { background: var(--mkt-surface); }
+
 .market-blog-hero { padding: 64px 0 40px; text-align: center; border-bottom: 1px solid var(--mkt-border); }
 
 .market-post-grid {
@@ -322,13 +306,14 @@
 
 .market-blog-post { background: var(--mkt-surface); }
 .market-post-header { padding: 48px 0 40px; border-bottom: 1px solid var(--mkt-border); }
-.market-post-breadcrumbs { display: flex; gap: 8px; align-items: center; font-size: 13px; margin-bottom: 16px; }
+.market-post-header .container { max-width: 1200px; }
+.market-post-breadcrumbs { display: flex; gap: 8px; align-items: center; font-size: 13px; margin-bottom: 16px; width: 100%; box-sizing: border-box; }
 .market-post-breadcrumbs a { color: var(--mkt-muted); text-decoration: none; }
 .market-post-breadcrumbs a:hover { color: var(--mkt-accent); }
 .market-post-breadcrumbs span { color: var(--mkt-muted); }
 .market-post-title { font-size: clamp(28px, 4vw, 48px); font-weight: 800; letter-spacing: -0.01em; margin: 8px 0 16px; line-height: 1.15; }
-.market-post-summary { font-size: 17px; color: var(--mkt-muted); line-height: 1.6; margin: 0; max-width: 640px; }
-.market-post-body { padding: 40px 0 80px; max-width: 720px; }
+.market-post-summary { font-size: 17px; color: var(--mkt-muted); line-height: 1.6; margin: 0; max-width: 1200px; }
+.market-post-body { padding: 40px 0 80px; max-width: 1200px; }
 .market-category-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 32px; flex-wrap: wrap; }
 
 /* ── Footer ────────────────────────────────────────────────────── */
@@ -367,5 +352,16 @@
 @media (max-width: 768px) {
   .category-grid { grid-template-columns: repeat(2, 1fr); }
   .template-grid { grid-template-columns: 1fr; }
-  .market-header-inner { flex-wrap: wrap; }
 }
+/* Blog post card colors (override main.css white → market dark) */
+.market-blog-post .section-card,
+.market-blog-post .rich-text-block,
+.market-blog-post .cta-banner {
+  background: var(--mkt-surface-2) !important;
+  border-color: var(--mkt-border) !important;
+  color: var(--mkt-text) !important;
+  padding: 28px !important;
+}
+.market-blog-post .section-heading { color: var(--mkt-text) !important; }
+.market-blog-post .rich-text,
+.market-blog-post .cta-copy { color: var(--mkt-muted) !important; }
