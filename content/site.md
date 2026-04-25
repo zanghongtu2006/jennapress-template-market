@@ -1,23 +1,24 @@
 ---
-name: JennaPress Template Market
-logoText: JM
-baseURL: /jennapress-template-market
-theme: dark
-defaultTemplate: template-market
-defaultTheme: dark
-defaultPost: /blog/enterprise/saas-landing
+name: TemplateMarket
+logoText: TM
+siteUrl: https://example.com
+defaultTemplate: template-marketplace
+defaultTheme: light
+themes:
+  - light
+tagline: Search templates...
 nav:
-  - to: /
-    label: Home
-  - to: /blog
-    label: Blog
-  - to: /about
-    label: About
-  - to: /principles
-    label: Principles
-footerText: Built for builders. MIT License.
+  - label: Browse
+    to: /
+  - label: Categories
+    to: /products
+  - label: Pricing
+    to: /products/landing-page
+  - label: Submit
+    to: /products/ai-tools
+footerText: Free downloadable website templates with external preview and ZIP links.
+contactEmail: hello@example.com
 socialLinks:
-  - platform: github
-    to: https://github.com/zanghongtu2006/jennapress-template-market
-    label: GitHub
+  - label: GitHub
+    to: https://example.com/github
 ---

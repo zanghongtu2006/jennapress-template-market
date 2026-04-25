@@ -1,21 +1,24 @@
 ---
-name: JennaPress 模板市场
-logoText: JM
-baseURL: /jennapress-template-market
-theme: dark
-defaultTemplate: template-market
-defaultTheme: dark
-defaultPost: /zh/blog/enterprise/saas-landing
+name: TemplateMarket
+logoText: TM
+siteUrl: https://example.com
+defaultTemplate: template-marketplace
+defaultTheme: light
+themes:
+  - light
+tagline: 搜索模板...
 nav:
-  - to: /zh
-    label: 首页
-  - to: /zh/blog
-    label: 博客
-  - to: /zh/about
-    label: 关于
-footerText: 为构建者而生。MIT 协议。
+  - label: 浏览
+    to: /
+  - label: 分类
+    to: /products
+  - label: 价格
+    to: /products/landing-page
+  - label: 提交
+    to: /products/ai-tools
+footerText: 免费下载的网站模板市场，提供外部预览链接和 ZIP 下载地址。
+contactEmail: hello@example.com
 socialLinks:
-  - platform: github
-    to: https://github.com/zanghongtu2006/jennapress-template-market
-    label: GitHub
+  - label: GitHub
+    to: https://example.com/github
 ---

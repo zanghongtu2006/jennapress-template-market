@@ -44,36 +44,81 @@ function slugifyCategory(input: string) {
   return input.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 }
 
+function resolveNormalizedCategorySlug(data: Record<string, unknown>, collection: 'posts' | 'products') {
+  if (collection === 'products') {
+    const categorySlug = typeof data?.categorySlug === 'string' ? data.categorySlug.trim() : ''
+    if (categorySlug) {
+      return slugifyCategory(categorySlug)
+    }
+  }
+
+  const category = typeof data?.category === 'string' ? data.category.trim() : ''
+  return category ? slugifyCategory(category) : 'general'
+}
+
 function listMarkdownFiles(dir: string) {
   if (!fs.existsSync(dir)) {
     return []
   }
-  return fs.readdirSync(dir).filter((file) => file.endsWith('.md'))
+
+  const files: string[] = []
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const absolutePath = path.join(dir, entry.name)
+    if (entry.isDirectory()) {
+      files.push(...listMarkdownFiles(absolutePath))
+      continue
+    }
+
+    if (entry.isFile() && entry.name.endsWith('.md')) {
+      files.push(absolutePath)
+    }
+  }
+
+  return files
 }
 
 const SUPPORTED_LOCALES = LOCALES.map((item) => item.code)
 const SECONDARY_LOCALES = SUPPORTED_LOCALES.filter((locale) => locale !== DEFAULT_LOCALE)
 const localePattern = SECONDARY_LOCALES.length ? SECONDARY_LOCALES.map((locale) => locale.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') : '__no_locale__'
 
-function readPageRoutesForDir(dir: string) {
-  const files = listMarkdownFiles(dir)
-  return files
-    .map((file) => {
-      const data = readFrontMatter(path.join(dir, file))
-      const slug = data?.slug ? String(data.slug) : ''
-      return slug === '/' ? '/' : `/${slug.replace(/^\//, '')}`
-    })
-    .filter(Boolean)
+function getCollectionLocaleFromPath(filePath: string, collection: 'pages' | 'posts' | 'products') {
+  const normalized = filePath.replace(/\\/g, '/')
+  const match = normalized.match(new RegExp(`/${collection}/([a-z0-9-]+)/`, 'i'))
+  const candidate = match?.[1]?.toLowerCase()
+  return candidate && SUPPORTED_LOCALES.includes(candidate) ? candidate : DEFAULT_LOCALE
+}
+
+function readCollectionEntries<T>(collection: 'pages' | 'posts' | 'products', readEntry: (filePath: string) => T | null) {
+  const dir = path.resolve(process.cwd(), `content/${collection}`)
+  const entries = new Map<string, Map<string, T>>()
+
+  for (const locale of SUPPORTED_LOCALES) {
+    entries.set(locale, new Map())
+  }
+
+  for (const filePath of listMarkdownFiles(dir)) {
+    const locale = getCollectionLocaleFromPath(filePath, collection)
+    const entry = readEntry(filePath)
+    if (!entry) continue
+    entries.get(locale)?.set(filePath, entry)
+  }
+
+  return entries
 }
 
 function readPageRoutes() {
-  const pagesDir = path.resolve(process.cwd(), 'content/pages')
-  const defaultRoutes = readPageRoutesForDir(pagesDir)
+  const entriesByLocale = readCollectionEntries('pages', (filePath) => {
+    const data = readFrontMatter(filePath)
+    const slug = data?.slug ? String(data.slug) : ''
+    if (!slug) return null
+    return slug === '/' ? '/' : `/${slug.replace(/^\//, '')}`
+  })
+
+  const defaultRoutes = Array.from(entriesByLocale.get(DEFAULT_LOCALE)?.values() ?? [])
   const routes = new Set<string>(defaultRoutes.length ? defaultRoutes : ['/'])
 
   for (const locale of SECONDARY_LOCALES) {
-    const localizedDir = path.join(pagesDir, locale)
-    const localizedRoutes = new Set(readPageRoutesForDir(localizedDir))
+    const localizedRoutes = new Set(entriesByLocale.get(locale)?.values() ?? [])
 
     for (const route of defaultRoutes) {
       routes.add(route === '/' ? `/${locale}` : `/${locale}${route}`)
@@ -87,22 +132,60 @@ function readPageRoutes() {
   return Array.from(routes)
 }
 
-function readPostEntriesForDir(dir: string) {
-  const files = listMarkdownFiles(dir)
-  return files
-    .map((file) => {
-      const data = readFrontMatter(path.join(dir, file))
-      const slug = data?.slug ? String(data.slug).replace(/^\//, '') : ''
-      const category = data?.category ? slugifyCategory(String(data.category)) : 'general'
-      if (!slug) return null
-      return { slug, category }
-    })
-    .filter(Boolean) as Array<{ slug: string, category: string }>
+function readLocalizedPageSlugs() {
+  const entriesByLocale = readCollectionEntries('pages', (filePath) => {
+    const data = readFrontMatter(filePath)
+    const slug = data?.slug ? String(data.slug) : ''
+    if (!slug) return null
+    return slug === '/' ? '/' : `/${slug.replace(/^\//, '')}`
+  })
+
+  const defaultSlugs = new Set(entriesByLocale.get(DEFAULT_LOCALE)?.values() ?? ['/'])
+  const mergedByLocale = new Map<string, Set<string>>()
+  mergedByLocale.set(DEFAULT_LOCALE, defaultSlugs)
+
+  for (const locale of SECONDARY_LOCALES) {
+    const merged = new Set(defaultSlugs)
+    for (const slug of entriesByLocale.get(locale)?.values() ?? []) {
+      merged.add(slug)
+    }
+    mergedByLocale.set(locale, merged)
+  }
+
+  return mergedByLocale
+}
+
+function readLocalizedContentEntries(collection: 'posts' | 'products') {
+  const entriesByLocale = readCollectionEntries(collection, (filePath) => {
+    const data = readFrontMatter(filePath)
+    const slug = data?.slug ? String(data.slug).replace(/^\//, '') : ''
+    const category = resolveNormalizedCategorySlug(data, collection)
+    if (!slug) return null
+    return { slug, category }
+  })
+
+  const defaultEntries = new Map<string, { slug: string, category: string }>()
+  for (const entry of entriesByLocale.get(DEFAULT_LOCALE)?.values() ?? []) {
+    defaultEntries.set(entry.slug, entry)
+  }
+
+  const mergedByLocale = new Map<string, Map<string, { slug: string, category: string }>>()
+  mergedByLocale.set(DEFAULT_LOCALE, defaultEntries)
+
+  for (const locale of SECONDARY_LOCALES) {
+    const merged = new Map(defaultEntries)
+    for (const entry of entriesByLocale.get(locale)?.values() ?? []) {
+      merged.set(entry.slug, entry)
+    }
+    mergedByLocale.set(locale, merged)
+  }
+
+  return mergedByLocale
 }
 
 function readBlogRoutes() {
-  const postsDir = path.resolve(process.cwd(), 'content/posts')
-  const defaultEntries = readPostEntriesForDir(postsDir)
+  const entriesByLocale = readLocalizedContentEntries('posts')
+  const defaultEntries = Array.from(entriesByLocale.get(DEFAULT_LOCALE)?.values() ?? [])
   const routes = new Set<string>(['/blog'])
 
   for (const entry of defaultEntries) {
@@ -111,25 +194,88 @@ function readBlogRoutes() {
   }
 
   for (const locale of SECONDARY_LOCALES) {
-    const localizedDir = path.join(postsDir, locale)
-    const merged = new Map<string, { slug: string, category: string }>()
-
-    for (const entry of defaultEntries) {
-      merged.set(entry.slug, entry)
-    }
-
-    for (const entry of readPostEntriesForDir(localizedDir)) {
-      merged.set(entry.slug, entry)
-    }
-
     routes.add(`/${locale}/blog`)
-    for (const entry of merged.values()) {
+    for (const entry of entriesByLocale.get(locale)?.values() ?? []) {
       routes.add(`/${locale}/blog/${entry.category}`)
       routes.add(`/${locale}/blog/${entry.category}/${entry.slug}`)
     }
   }
 
   return Array.from(routes)
+}
+
+function readProductRoutes() {
+  const entriesByLocale = readLocalizedContentEntries('products')
+  const defaultEntries = Array.from(entriesByLocale.get(DEFAULT_LOCALE)?.values() ?? [])
+  const routes = new Set<string>(['/products'])
+
+  for (const entry of defaultEntries) {
+    routes.add(`/products/${entry.category}`)
+    routes.add(`/products/${entry.category}/${entry.slug}`)
+  }
+
+  for (const locale of SECONDARY_LOCALES) {
+    routes.add(`/${locale}/products`)
+    for (const entry of entriesByLocale.get(locale)?.values() ?? []) {
+      routes.add(`/${locale}/products/${entry.category}`)
+      routes.add(`/${locale}/products/${entry.category}/${entry.slug}`)
+    }
+  }
+
+  return Array.from(routes)
+}
+
+function encodeRouteSegment(value: string) {
+  return encodeURIComponent(value)
+}
+
+function pageSlugToApiPath(slug: string) {
+  if (slug === '/') {
+    return '_root'
+  }
+
+  return slug.replace(/^\//, '').split('/').filter(Boolean).map(encodeRouteSegment).join('/')
+}
+
+function readContentApiRoutes() {
+  const routes: string[] = []
+  const pageSlugsByLocale = readLocalizedPageSlugs()
+  const blogEntriesByLocale = readLocalizedContentEntries('posts')
+  const productEntriesByLocale = readLocalizedContentEntries('products')
+
+  for (const locale of SUPPORTED_LOCALES) {
+    routes.push(`/api/content/${locale}/site`)
+    routes.push(`/api/content/${locale}/search-index`)
+    routes.push(`/api/search/${locale}.json`)
+
+    for (const slug of pageSlugsByLocale.get(locale)?.values() ?? []) {
+      routes.push(`/api/content/${locale}/page/${pageSlugToApiPath(slug)}`)
+    }
+
+    routes.push(`/api/content/${locale}/blog/categories`)
+    routes.push(`/api/content/${locale}/blog/posts`)
+    const blogCategories = new Set<string>()
+    for (const entry of blogEntriesByLocale.get(locale)?.values() ?? []) {
+      blogCategories.add(entry.category)
+      routes.push(`/api/content/${locale}/blog/post/${encodeRouteSegment(entry.category)}/${encodeRouteSegment(entry.slug)}`)
+    }
+    for (const category of blogCategories) {
+      routes.push(`/api/content/${locale}/blog/category/${encodeRouteSegment(category)}`)
+    }
+
+    routes.push(`/api/content/${locale}/products/categories`)
+    routes.push(`/api/content/${locale}/products/items`)
+    const productCategories = new Set<string>()
+    for (const entry of productEntriesByLocale.get(locale)?.values() ?? []) {
+      productCategories.add(entry.category)
+      routes.push(`/api/content/${locale}/products/item/${encodeRouteSegment(entry.category)}/${encodeRouteSegment(entry.slug)}`)
+    }
+    for (const category of productCategories) {
+      routes.push(`/api/content/${locale}/products/category/${encodeRouteSegment(category)}`)
+    }
+  }
+
+  return routes
 }
 
 function readDefaultTheme() {
@@ -154,10 +300,6 @@ export default defineNuxtConfig({
     url: readFrontMatter(path.resolve(process.cwd(), 'content/site.md')).siteUrl || '',
     trailingSlash: true,
   },
-  sitemap: {
-    hostname: readFrontMatter(path.resolve(process.cwd(), 'content/site.md')).siteUrl || '',
-  },
-
   hooks: {
     'pages:extend'(pages) {
       const root = process.cwd()
@@ -178,6 +320,21 @@ export default defineNuxtConfig({
           file: path.resolve(root, 'pages/blog/index.vue')
         },
         {
+          name: 'locale-product',
+          path: `/:locale(${localePattern})/products/:category/:slug`,
+          file: path.resolve(root, 'pages/products/[category]/[slug].vue')
+        },
+        {
+          name: 'locale-product-category',
+          path: `/:locale(${localePattern})/products/:category`,
+          file: path.resolve(root, 'pages/products/[category]/index.vue')
+        },
+        {
+          name: 'locale-products',
+          path: `/:locale(${localePattern})/products`,
+          file: path.resolve(root, 'pages/products/index.vue')
+        },
+        {
           name: 'locale-page',
           path: `/:locale(${localePattern})/:slug(.*)`,
           file: path.resolve(root, 'pages/[...slug].vue')
@@ -195,7 +352,7 @@ export default defineNuxtConfig({
     }
   },
   app: {
-    baseURL: '/jennapress-template-market/',
+    baseURL: '/',
     head: {
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' }
@@ -267,7 +424,7 @@ export default defineNuxtConfig({
     preset: 'static',
     prerender: {
       autoSubfolderIndex: true,
-      routes: [...readPageRoutes(), ...readBlogRoutes()]
+      routes: [...readPageRoutes(), ...readBlogRoutes(), ...readProductRoutes(), ...readContentApiRoutes()]
     }
   },
   runtimeConfig: {

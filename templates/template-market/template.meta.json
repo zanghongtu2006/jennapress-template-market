@@ -1,8 +1,0 @@
-{
-  "name": "template-market",
-  "label": "Template Market",
-  "description": "A marketplace-style template for browsing JennaPress site templates.",
-  "category": "market",
-  "themes": ["dark", "light", "pink"],
-  "blocks": ["hero", "feature-grid", "rich-text", "cta-banner"]
-}

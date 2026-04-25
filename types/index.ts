@@ -119,3 +119,69 @@ export type BlogPostContent = Omit<PostContent, 'category'> & {
   category: string
   categoryMeta: BlogCategory
 }
+
+export type Template = {
+  id: string
+  name: string
+  label: string
+  description?: string
+  version: string
+  author: string
+  tags: string[]
+  category: string
+  downloadCount: number
+  createdAt: string
+  updatedAt: string
+}
+
+export type Creator = {
+  username: string
+  displayName: string
+  avatar?: string
+  bio?: string
+  socialLinks?: Array<{ platform: string; url: string }>
+  templateCount: number
+}
+
+export type Product = {
+  slug: string
+  title: string
+  description: string
+  seo?: SeoMeta
+  coverImage: string
+  previewImages: string[]
+  price: number
+  isFree: boolean
+  downloadUrl: string
+  author: string
+  authorUrl: string
+  category: string
+  categoryMeta?: BlogCategory
+  tags: string[]
+  downloadCount: number
+  createdAt: string
+  updatedAt: string
+  blocks?: Block[]
+}
+
+export type SearchCollection = 'pages' | 'blog' | 'products'
+
+export type SearchIndexEntry = {
+  id: string
+  collection: SearchCollection
+  locale: string
+  title: string
+  description: string
+  url: string
+  text: string
+  category?: string
+  categoryLabel?: string
+  tags?: string[]
+  publishedAt?: string
+  updatedAt?: string
+}
+
+export type SearchIndexPayload = {
+  locale: string
+  entries: SearchIndexEntry[]
+}

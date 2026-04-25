@@ -1,9 +1,17 @@
 ---
 slug: /
 title: Home
-summary: JennaPress Template Market
+summary: Discover high-quality website templates.
 seo:
-  title: JennaPress Template Market | Ready-to-Deploy Website Templates
-  description: Browse professionally designed JennaPress site templates for blogs, enterprise sites, affiliate projects, and content platforms.
-blocks: []
+  title: TemplateMarket | High-quality website templates
+  description: Browse free downloadable templates for blogs, portfolios, docs, landing pages, ecommerce, and AI tools.
+  canonical: https://example.com/
+blocks:
+  - type: hero
+    kicker: Template marketplace
+    title: Discover high-quality website templates
+    description: Browse responsive templates and open the product catalog to preview or download every template as a ZIP package.
+    primaryAction:
+      label: Browse Templates
+      to: /products
 ---

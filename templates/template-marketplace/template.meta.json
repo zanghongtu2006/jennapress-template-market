@@ -1,0 +1,21 @@
+{
+  "name": "template-marketplace",
+  "version": "0.1.0",
+  "label": "Template Marketplace",
+  "description": "A premium, responsive product-marketplace template for listing downloadable website templates.",
+  "supportedPageTypes": [
+    "page",
+    "product"
+  ],
+  "supportedBlocks": [
+    "hero",
+    "feature-grid",
+    "rich-text",
+    "cta-banner",
+    "stats",
+    "contact"
+  ],
+  "themes": [
+    "light"
+  ]
+}
