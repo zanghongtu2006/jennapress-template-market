@@ -21,25 +21,47 @@ const props = defineProps<{
 const p = (path: string) =>
   props.locale && props.locale !== props.defaultLocale ? `/${props.locale}${path}` : path
 
+const isZh = computed(() => props.locale === 'zh')
+const copy = computed(() => isZh.value ? {
+  all: '全部模板',
+  preview: '预览',
+  details: '详情',
+  download: '下载 ZIP',
+  fallbackTitle: '模板',
+  fallbackDescription: '浏览 0元 免费下载模板。'
+} : {
+  all: 'All Templates',
+  preview: 'Preview',
+  details: 'Details',
+  download: 'Download ZIP',
+  fallbackTitle: 'Templates',
+  fallbackDescription: 'Browse free downloadable templates marked as 0元.'
+})
+
 const productPath = (product: Product) => p(`/products/${product.categoryMeta?.slug || 'general'}/${product.slug}`)
 const marketProducts = computed(() => props.products as MarketplaceProduct[])
 const priceLabel = () => '0元'
+const homeCategoryLink = (slug?: string) => ({
+  path: p('/'),
+  query: slug ? { category: slug } : {},
+  hash: '#templates',
+})
 </script>
 
 <template>
   <div class="tm-product-category">
     <section class="tm-container tm-category-hero">
-      <NuxtLink :to="p('/')" class="tm-breadcrumb">← TemplateMarket</NuxtLink>
-      <h1>{{ category?.label || 'Templates' }}</h1>
-      <p>{{ category?.description || 'Browse free downloadable templates.' }}</p>
+      <NuxtLink :to="homeCategoryLink()" class="tm-breadcrumb">← TemplateMarket</NuxtLink>
+      <h1>{{ category?.label || copy.fallbackTitle }}</h1>
+      <p>{{ category?.description || copy.fallbackDescription }}</p>
     </section>
 
     <section class="tm-container tm-category-tabs" aria-label="Template categories">
-      <NuxtLink :to="p('/')" class="tm-category-tab">All</NuxtLink>
+      <NuxtLink :to="homeCategoryLink()" class="tm-category-tab">{{ copy.all }}</NuxtLink>
       <NuxtLink
         v-for="item in categories"
         :key="item.slug"
-        :to="p(`/products/${item.slug}`)"
+        :to="homeCategoryLink(item.slug)"
         class="tm-category-tab"
         :class="{ 'is-active': item.slug === category?.slug }"
       >
@@ -70,8 +92,9 @@ const priceLabel = () => '0元'
             <span>⇩ {{ product.downloadCount.toLocaleString('en-US') }}</span>
           </footer>
           <div class="tm-card-actions">
-            <a :href="product.previewUrl || 'https://example.com/preview'" target="_blank" rel="noopener noreferrer">Preview</a>
-            <NuxtLink :to="productPath(product)">Details</NuxtLink>
+            <a :href="product.previewUrl || 'https://example.com/preview'" target="_blank" rel="noopener noreferrer">{{ copy.preview }}</a>
+            <a :href="product.downloadUrl" target="_blank" rel="noopener noreferrer">{{ copy.download }}</a>
+            <NuxtLink :to="productPath(product)">{{ copy.details }}</NuxtLink>
           </div>
         </article>
       </div>

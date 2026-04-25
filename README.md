@@ -1,68 +1,57 @@
 # JennaPress
 
 [![Website](https://img.shields.io/badge/Website-www.jennapress.com-blue)](https://www.jennapress.com)
-
-![Project Name](https://img.shields.io/badge/Project-JennaPress-8A2BE2?style=for-the-badge)
 ![Framework](https://img.shields.io/badge/Framework-Nuxt_3-00DC82?style=for-the-badge&logo=nuxt.js)
 ![Strategy](https://img.shields.io/badge/Strategy-Static_First-blue?style=for-the-badge)
 ![Design](https://img.shields.io/badge/Design-Template_Driven-FF69B4?style=for-the-badge)
 
-This codebase was created through prompt engineering and a ChatGPT AI programming assistant.
+JennaPress is a lightweight, static-first, template-driven website framework built with Nuxt 3.
 
-JennaPress is a lightweight, static-first CMS starter built with Nuxt. It is designed for company websites, landing pages, and category-driven content sites that need template switching without introducing a heavy backend.
+It is designed for websites where most business changes should happen in `content/`, `templates/`, and `public/template-assets/`, while routing, rendering, and data loading remain generic and stable.
 
-The main goal of this project is simple:
-
-- future users should mainly modify `content/*`
-- future users should mainly modify `templates/*`
-- routing and rendering should stay generic and stable
-- category-specific modules should be configurable instead of hardcoded
-
-This open-source project includes TEMPLATE_PROMPT, which can be used with AI assistance to easily generate template modules that meet the requirements with a single click.
+Typical use cases include company websites, landing pages, product showcase sites, blogs, documentation sites, content hubs, catalogs, and other static or mostly-static websites.
 
 ---
 
-## 1. What this project is for
+## 1. Design goals
 
-This project is designed for websites such as:
+JennaPress follows a small set of core principles:
 
-- company websites
-- SaaS landing sites
-- product showcase sites
-- event / campaign pages
-- content marketing sites
-- simple multi-module CMS sites
-
-The system is static-first:
-
-- content is stored in Markdown
-- site-level settings are stored in Markdown
-- templates are selected by configuration
-- blog categories can render through different module templates
-- `public/template-assets` stores template-specific public assets
-
-This keeps deployment simple and makes the project suitable for static hosting.
+- Keep the framework layer stable.
+- Let users mainly edit `content/*`.
+- Let designers and template authors mainly edit `templates/*` and `public/template-assets/*`.
+- Keep routing generic instead of hardcoding business pages.
+- Support multiple content types such as `page`, `blog`, and `product`.
+- Support multilingual sites through registered locale content.
+- Make templates distributable as standalone packages.
 
 ---
 
-## 2. Core idea
+## 2. Quick start
 
-This CMS has two main editable layers:
+Install dependencies:
 
-### A. Content layer
-Users provide and update content in:
+```bash
+npm install
+```
 
-- `content/site.md`
-- `content/pages/*.md`
-- `content/posts/*.md`
+Run the development server:
 
-### B. Template layer
-Users control appearance and module rendering in:
+```bash
+npm run dev
+```
 
-- `templates/<template-name>/*`
-- `public/template-assets/<template-name>/*`
+Build a static site:
 
-The framework layer should stay mostly unchanged.
+```bash
+npm run generate
+```
+
+Preview the generated site:
+
+```bash
+npm run preview
+```
 
 ---
 
@@ -70,494 +59,333 @@ The framework layer should stay mostly unchanged.
 
 ```text
 content/
+  l18n.ts
   site.md
+  site.<locale>.md
   pages/
-    *.md
   posts/
-    *.md
+  products/
+
+public/
+  template-assets/
+    <template-id>/
+
+templates/
+  <template-id>/
+    template.meta.json
+    Template.vue
+    Frame.vue
+    template.css
+    components/
+    page/
+    blog/
+    product/
 
 pages/
   index.vue
   [...slug].vue
   blog/
-    index.vue
-    [category]/
-      index.vue
-      [slug].vue
+  products/
 
-server/
-  api/
-    site/
+lib/
+components/
+composables/
+types/
+```
+
+The main editable areas are:
+
+- `content/` for site data and content data.
+- `templates/` for layout, styling, and content-type rendering.
+- `public/template-assets/` for template-specific static assets.
+
+The framework areas such as `pages/`, `lib/`, `components/`, `composables/`, and `types/` should usually remain unchanged when creating or installing a template.
+
+---
+
+## 4. Content layer
+
+The content layer is responsible for site configuration, localized text, pages, posts, and products.
+
+### Required registration files
+
+```text
+content/l18n.ts
+content/site.md
+content/site.<locale>.md
+```
+
+`content/l18n.ts` registers supported locales.
+
+`content/site.md` is the default site configuration.
+
+`content/site.<locale>.md` provides localized site configuration, for example:
+
+```text
+content/site.zh.md
+```
+
+### Content types
+
+JennaPress can render several content types:
+
+```text
+page
+blog
+product
+```
+
+A content item should declare the fields required by its type. For products, common fields include:
+
+```yaml
+title: "Example Product"
+description: "Short product description."
+category: "example-category"
+tags:
+  - seo
+  - nuxt
+price: 0
+previewImage: "/template-assets/example/cover.webp"
+previewUrl: "https://example.com/preview"
+downloadUrl: "https://example.com/download.zip"
+```
+
+A product should belong to one primary `category`. It may have multiple `tags` for filtering, search, and recommendation.
+
+---
+
+## 5. Template layer
+
+A template lives under:
+
+```text
+templates/<template-id>/
+```
+
+A typical template contains:
+
+```text
+template.meta.json
+Template.vue
+Frame.vue
+template.css
+components/
+page/
+blog/
+product/
+```
+
+### Template responsibilities
+
+A template is responsible for:
+
+- visual design
+- responsive layout
+- content-type rendering
+- component composition
+- template-specific CSS
+- using assets from `public/template-assets/<template-id>/`
+
+A template should not be responsible for:
+
+- changing core routing
+- changing global data loaders
+- changing build configuration
+- introducing backend-only behavior
+- hardcoding business data that belongs in `content/`
+
+### Content-type modules
+
+Templates may implement modules for specific content types:
+
+```text
+templates/<template-id>/page/
+templates/<template-id>/blog/
+templates/<template-id>/product/
+```
+
+For example, a product-oriented template may provide:
+
+```text
+templates/<template-id>/product/ProductHome.vue
+templates/<template-id>/product/ProductCategory.vue
+templates/<template-id>/product/ProductDetail.vue
+```
+
+---
+
+## 6. Public assets
+
+Template-specific public assets should be stored under:
+
+```text
+public/template-assets/<template-id>/
+```
+
+Examples:
+
+```text
+public/template-assets/<template-id>/cover.webp
+public/template-assets/<template-id>/screenshot-1.webp
+public/template-assets/<template-id>/icons.svg
+```
+
+Avoid mixing template assets directly into unrelated public folders. Keeping assets namespaced by template id makes packaging, installation, and cleanup safer.
+
+---
+
+## 7. Multilingual content
+
+JennaPress uses locale registration and localized site/content files.
+
+A typical setup:
+
+```text
+content/l18n.ts
+content/site.md
+content/site.zh.md
+```
+
+Templates should use locale-aware navigation helpers and avoid hardcoded internal links when a localized route is expected.
+
+Language switchers should switch between registered locales and keep the current page context whenever possible.
+
+---
+
+## 8. Template package standard
+
+A JennaPress template package is a standalone package that can be installed into a JennaPress project.
+
+To keep packages portable and safe, a template package should contain exactly the following five top-level items:
+
+```text
+example-template/
+  jennapress-template.json
+  templates/
+    <template-id>/
+  public/
+    template-assets/
+      <template-id>/
+  demo-content/
+    l18n.ts
+    site.md
+    site.<locale>.md
     pages/
     posts/
-  utils/
-    content.ts
-
-templates/
-  corporate-basic/
-    TemplateShell.vue
-    blog/
-      blog.config.ts
-      BlogHome.vue
-      BlogCategory.vue
-      BlogPost.vue
-      modules/
-        DefaultCategory.vue
-        DefaultPost.vue
-        CasesCategory.vue
-        ...
-  saas-landing/
-    ...
-
-public/
-  template-assets/
-    corporate-basic/
-    saas-landing/
+    products/
+  README.md
 ```
+
+The five top-level items are:
+
+1. `jennapress-template.json` — package manifest.
+2. `templates/` — the actual template implementation.
+3. `public/` — template-specific public assets.
+4. `demo-content/` — optional sample content for preview or manual import.
+5. `README.md` — installation notes and package-specific usage instructions.
+
+A template package must not include the JennaPress framework source code. It should not include framework directories such as `pages/`, `lib/`, `components/`, `composables/`, `types/`, `server/`, `nuxt.config.ts`, or `package.json`.
+
+A template package should also not include a root-level `content/` directory. Sample content belongs in `demo-content/` so it does not overwrite a user’s existing site content by default.
 
 ---
 
-## 4. Main routing rules
+## 9. Template manifest
 
-This project intentionally keeps routing simple.
+Example `jennapress-template.json`:
 
-### Static pages
-- `/` -> homepage or page content resolved from `content/pages`
-- `/<slug>` -> general content pages
-
-### Blog pages
-- `/blog` -> blog home
-- `/blog/:category` -> category page
-- `/blog/:category/:slug` -> post detail page
-
-There is no `/blog/:slug` layer.
-
-This is intentional. Every blog post belongs to one category.
-
----
-
-## 5. Content rules
-
-## 5.1 `content/site.md`
-
-This file stores site-level settings.
-
-Typical fields include:
-
-```yaml
-title: "Nuxt Site Kit"
-description: "A static-first CMS starter"
-defaultTemplate: "corporate-basic"
-siteUrl: "https://example.com"
-```
-
-### Important
-`defaultTemplate` controls which folder inside `templates/` is active.
-
-If you change:
-
-```yaml
-defaultTemplate: "saas-landing"
-```
-
-the site will render using:
-
-```text
-templates/saas-landing/
-public/template-assets/saas-landing/
-```
-
----
-
-## 5.2 `content/pages/*.md`
-
-These are normal site pages.
-
-Typical front matter:
-
-```yaml
-slug: "about"
-title: "About"
-summary: "About our team and business"
-publishedAt: "2026-03-08"
-seo:
-  title: "About | Example"
-  description: "Learn more about our company"
-```
-
----
-
-## 5.3 `content/posts/*.md`
-
-These are blog posts.
-
-Typical front matter:
-
-```yaml
-slug: "acme-rollout"
-title: "ACME rollout case"
-summary: "How ACME improved delivery speed"
-category: "cases"
-publishedAt: "2026-03-08"
-seo:
-  title: "ACME rollout case | Example"
-  description: "A customer case about delivery improvement"
-```
-
-### Required rule
-Every post must have a `category`.
-
-This project assumes:
-
-- a category groups content
-- a category also selects the module template
-
----
-
-## 6. Category-driven module templates
-
-This is the key design rule of this CMS.
-
-A blog `category` is not only a taxonomy field.  
-It is also a module-template selector.
-
-Example:
-
-- `cases` -> case module
-- `products` -> product module
-- `events` -> event module
-
-This allows different category pages to behave like different content modules while still sharing the same `/blog` routing system.
-
----
-
-## 7. Where category-template mapping is configured
-
-The mapping is maintained inside the active template.
-
-For each template, use:
-
-```text
-templates/<template-name>/blog/blog.config.ts
-```
-
-Example structure:
-
-```ts
-import BlogHome from './BlogHome.vue'
-import DefaultCategory from './modules/DefaultCategory.vue'
-import DefaultPost from './modules/DefaultPost.vue'
-import CasesCategory from './modules/CasesCategory.vue'
-import EventsCategory from './modules/EventsCategory.vue'
-
-export default {
-  home: BlogHome,
-  categoryTemplates: {
-    default: DefaultCategory,
-    cases: CasesCategory,
-    events: EventsCategory,
-    products: DefaultCategory
-  },
-  postTemplates: {
-    default: DefaultPost,
-    cases: DefaultPost,
-    events: DefaultPost,
-    products: DefaultPost
+```json
+{
+  "id": "example-template",
+  "name": "Example Template",
+  "type": "product",
+  "version": "1.0.0",
+  "entry": "templates/example-template",
+  "assets": "public/template-assets/example-template",
+  "demoContent": "demo-content",
+  "supports": ["en", "zh"],
+  "requires": {
+    "jennapress": ">=1.0.0"
   }
 }
 ```
 
-### Meaning
-
-- `categoryTemplates` controls `/blog/:category`
-- `postTemplates` controls `/blog/:category/:slug`
-
-If a category is not explicitly configured, the system should fall back to `default`.
+The manifest is used to describe the template package, locate the entry template, locate assets, declare demo content, and define compatibility.
 
 ---
 
-## 8. Recommended module design
+## 10. Safe installation rules
 
-Inside a template, blog modules should stay simple and explicit.
+When installing a template into an existing project:
 
-Recommended structure:
+1. Copy `templates/<template-id>/` into the project.
+2. Copy `public/template-assets/<template-id>/` into the project.
+3. Do not overwrite `content/` automatically.
+4. Treat `demo-content/` as optional sample data.
+5. Preserve existing `content/l18n.ts`, `content/site.md`, and localized site files unless the user explicitly confirms replacement.
+6. Keep the framework layer unchanged unless a template explicitly declares a required core version or migration.
+
+This keeps template installation reversible and reduces the risk of losing user content.
+
+---
+
+## 11. Development boundaries
+
+For normal template work, changes should be limited to:
 
 ```text
-templates/<template-name>/blog/
-  blog.config.ts
-  BlogHome.vue
-  BlogCategory.vue
-  BlogPost.vue
-  modules/
-    DefaultCategory.vue
-    DefaultPost.vue
-    CasesCategory.vue
-    EventsCategory.vue
-    ProductsCategory.vue
-    ProductsPost.vue
+templates/
+content/
+public/
 ```
 
-### Recommended rule
-Avoid putting many `if (category === ...)` branches inside one big component.
-
-Instead:
-
-- create one module component per module type
-- register it in `blog.config.ts`
-- let the generic wrapper component resolve it
-
-This keeps the project maintainable.
-
----
-
-## 9. How template switching works
-
-Template switching is controlled by `content/site.md`.
-
-Example:
-
-```yaml
-defaultTemplate: "corporate-basic"
-```
-
-When changed to:
-
-```yaml
-defaultTemplate: "saas-landing"
-```
-
-the site should automatically use the rendering logic from:
+Avoid changing these areas unless the task is explicitly about framework development:
 
 ```text
-templates/saas-landing/
+pages/
+lib/
+components/
+composables/
+types/
+server/
+nuxt.config.ts
+package.json
 ```
 
-and public assets from:
+This boundary makes code review easier and keeps templates portable.
+
+---
+
+## 12. Deployment
+
+JennaPress is static-first. A generated site can be deployed to static hosting platforms after running:
+
+```bash
+npm run generate
+```
+
+The generated output can be served by any static file host, CDN, object storage service, or traditional web server.
+
+---
+
+## 13. Licensing model
+
+The JennaPress framework and individual JennaPress template packages may use different licensing models.
+
+For the JennaPress framework repository, usage, modification, redistribution, and commercial rights are defined by the `LICENSE` file in that repository.
+
+For standalone template packages, the recommended rule is:
 
 ```text
-public/template-assets/saas-landing/
+Framework source code is not included in the package.
+Template package rights are defined by the package itself.
+If a template package does not include a LICENSE file, no open-source license is granted by default.
 ```
 
-### Recommended boundary
-- `templates/*` = component structure and rendering rules
-- `public/template-assets/*` = images, icons, background assets, static theme files
-
----
-
-## 10. How to add a new category module
-
-Example: add `news`
-
-### Step 1
-Create module components in the active template:
+A proprietary template package may include the following notice in its package README:
 
 ```text
-templates/<template-name>/blog/modules/NewsCategory.vue
-templates/<template-name>/blog/modules/NewsPost.vue
+This template package is proprietary. No license is granted for redistribution, resale, sublicensing, public hosting, or use as a competing template package or template marketplace. All rights reserved.
 ```
 
-### Step 2
-Register them in `blog.config.ts`
-
-```ts
-categoryTemplates: {
-  default: DefaultCategory,
-  news: NewsCategory
-},
-postTemplates: {
-  default: DefaultPost,
-  news: NewsPost
-}
-```
-
-### Step 3
-Add posts in `content/posts/*.md`
-
-```yaml
-category: "news"
-```
-
-That is enough.
-
-No route changes are needed.
-
----
-
-## 11. How to add a new site template
-
-Example: add `industrial-dark`
-
-### Step 1
-Create a new template folder:
-
-```text
-templates/industrial-dark/
-```
-
-### Step 2
-Copy the required shell and blog files:
-
-```text
-TemplateShell.vue
-blog/
-  blog.config.ts
-  BlogHome.vue
-  BlogCategory.vue
-  BlogPost.vue
-  modules/
-```
-
-### Step 3
-Add public assets:
-
-```text
-public/template-assets/industrial-dark/
-```
-
-### Step 4
-Switch in `content/site.md`
-
-```yaml
-defaultTemplate: "industrial-dark"
-```
-
----
-
-## 12. What future users usually need to change
-
-Most future users should only need to change these places.
-
-### Content editors
-- `content/site.md`
-- `content/pages/*.md`
-- `content/posts/*.md`
-
-### Template designers
-- `templates/<template-name>/*`
-- `public/template-assets/<template-name>/*`
-
-### Usually not needed
-- `pages/*`
-- `server/api/*`
-- `server/utils/*`
-
-Those should remain stable framework code.
-
----
-
-## 13. YAML front matter rules
-
-When editing Markdown front matter, quote values if they contain:
-
-- `:`
-- long SEO text
-- date-like strings
-- special punctuation
-
-Example:
-
-```yaml
-seo:
-  title: "Why static corporate sites are a strong default | Example"
-  description: "This is exactly the product direction the demo is validating: static-first, template-driven, and narrow by design."
-```
-
-This avoids YAML parsing errors.
-
----
-
-## 14. Authoring guideline for posts
-
-Recommended post fields:
-
-```yaml
-slug: "string"
-title: "string"
-summary: "string"
-category: "cases"
-publishedAt: "YYYY-MM-DD"
-updatedAt: "YYYY-MM-DD"
-coverImage: "/template-assets/..."
-seo:
-  title: "string"
-  description: "string"
-```
-
-### Recommended content rule
-Keep `category` stable and lowercase.
-
-Examples:
-
-- `cases`
-- `products`
-- `events`
-- `news`
-
-Avoid mixing:
-
-- `Cases`
-- `case`
-- `CASES`
-
-Choose one canonical slug and keep using it.
-
----
-
-## 15. Simple maintenance workflow
-
-### Change content only
-Edit Markdown files in `content/`
-
-### Change visual style only
-Edit files in `templates/<template-name>/` and `public/template-assets/<template-name>/`
-
-### Change category-specific page style
-Create or edit module components in:
-
-```text
-templates/<template-name>/blog/modules/
-```
-
-and update:
-
-```text
-templates/<template-name>/blog/blog.config.ts
-```
-
----
-
-## 16. Design goal summary
-
-This project is intentionally opinionated:
-
-- static-first
-- content in Markdown
-- template-driven rendering
-- category-driven blog modules
-- stable routes
-- minimal backend logic
-- future users should mainly edit `content` and `templates`
-
-That is the intended CMS model.
-
----
-
-## 17. Suggested editing order for new users
-
-If you are using this project for the first time, follow this order:
-
-1. edit `content/site.md`
-2. choose or switch `defaultTemplate`
-3. upload assets into `public/template-assets/<template-name>/`
-4. edit `content/pages/*.md`
-5. edit `content/posts/*.md`
-6. if needed, create category modules in `templates/<template-name>/blog/modules/`
-7. register them in `templates/<template-name>/blog/blog.config.ts`
-
----
-
-## 18. Final note
-
-This project is meant to stay simple.
-
-If you find yourself frequently changing route files or server API code for normal content work, that usually means the content or template abstraction should be improved instead.
+This keeps the open-source JennaPress framework and proprietary template packages separated.
