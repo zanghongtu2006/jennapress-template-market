@@ -46,8 +46,8 @@ marketplaceCategories:
     description: 适合课程、社区和非营利网站
     featured: false
 footerText: 免费下载的网站模板市场，提供外部预览链接和 ZIP 下载地址。每个模板都作为 0元 product 展示。
-contactEmail: hello@example.com
+contactEmail: zanghongtu2006@gmail.com
 socialLinks:
   - label: GitHub
-    to: https://example.com/github
+    to: https://github.com/zanghongtu2006
 ---

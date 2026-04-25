@@ -46,8 +46,8 @@ marketplaceCategories:
     description: For courses, communities and nonprofit sites
     featured: false
 footerText: Free downloadable website templates with external preview and ZIP links. Every template is shown as a 0元 product.
-contactEmail: hello@example.com
+contactEmail: zanghongtu2006@gmail.com
 socialLinks:
   - label: GitHub
-    to: https://example.com/github
+    to: https://github.com/zanghongtu2006
 ---
