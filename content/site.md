@@ -45,7 +45,7 @@ marketplaceCategories:
     name: Community & Education
     description: For courses, communities and nonprofit sites
     featured: false
-footerText: Free downloadable website templates with external preview and ZIP links. Every template is shown as a 0元 product.
+footerText: Free downloadable website templates with external preview and ZIP links. Every template is shown as a 0 price product.
 contactEmail: zanghongtu2006@gmail.com
 socialLinks:
   - label: GitHub
