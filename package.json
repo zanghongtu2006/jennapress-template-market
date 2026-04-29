@@ -4,14 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "nuxt dev",
-    "build": "nuxt generate",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "generate:template-index": "node scripts/generate-template-index.mjs",
-    "predev": "node scripts/generate-template-index.mjs",
-    "pregenerate": "node scripts/generate-template-index.mjs",
-    "prebuild": "node scripts/generate-template-index.mjs"
+    "generate:index": "node scripts/generate-template-index.mjs",
+    "dev": "npm run generate:index && nuxt dev",
+    "build": "npm run generate:index && nuxt build",
+    "generate": "npm run generate:index && nuxt generate",
+    "preview": "nuxt preview"
   },
   "dependencies": {
     "@nuxtjs/sitemap": "^8.0.8",
