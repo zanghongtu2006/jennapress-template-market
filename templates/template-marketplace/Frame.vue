@@ -17,8 +17,23 @@ const currentLocale = computed(() => parsedPath.value.locale || DEFAULT_LOCALE)
 const isZh = computed(() => currentLocale.value === 'zh')
 const headerSearch = ref('')
 
-const p = (path: string) =>
-  currentLocale.value && currentLocale.value !== DEFAULT_LOCALE ? `/${currentLocale.value}${path}` : path
+const p = (path: string) => {
+  if (!path || !path.startsWith('/') || path.startsWith('//')) {
+    return path
+  }
+
+  const locale = currentLocale.value
+  if (!locale || locale === DEFAULT_LOCALE) {
+    return path
+  }
+
+  const localePrefix = `/${locale}`
+  if (path === localePrefix || path.startsWith(`${localePrefix}/`) || path.startsWith(`${localePrefix}#`)) {
+    return path
+  }
+
+  return path === '/' ? localePrefix : `${localePrefix}${path}`
+}
 
 const localizeTo = (to: string) => to.startsWith('/') ? p(to) : to
 
