@@ -43,8 +43,7 @@ const marketProducts = computed(() => props.products as MarketplaceProduct[])
 const priceLabel = () => '0元'
 const homeCategoryLink = (slug?: string) => ({
   path: p('/'),
-  query: slug ? { category: slug } : {},
-  hash: '#templates',
+  hash: slug ? `#templates?category=${encodeURIComponent(slug)}` : '#templates',
 })
 </script>
 

@@ -1192,3 +1192,33 @@
     padding: 14px;
   }
 }
+
+.tm-link-button,
+.tm-category-card,
+.tm-filter-option,
+.tm-filter-tag {
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.tm-link-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.tm-category-card,
+.tm-filter-option,
+.tm-filter-tag {
+  appearance: none;
+}
+
+.tm-category-card {
+  color: inherit;
+}
+
+.tm-filter-option {
+  width: 100%;
+  background: transparent;
+}

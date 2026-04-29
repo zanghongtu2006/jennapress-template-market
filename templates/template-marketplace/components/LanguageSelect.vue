@@ -24,7 +24,6 @@ const selectedLanguage = computed({
 
     await navigateTo({
       path: targetPath,
-      query: route.query,
       hash: route.hash
     })
   }

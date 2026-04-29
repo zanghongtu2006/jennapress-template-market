@@ -47,8 +47,7 @@ const item = computed(() => props.product as MarketplaceProduct | null)
 const priceLabel = () => '0元'
 const categoryHomeLink = computed(() => ({
   path: p('/'),
-  query: props.category?.slug ? { category: props.category.slug } : {},
-  hash: '#templates',
+  hash: props.category?.slug ? `#templates?category=${encodeURIComponent(props.category.slug)}` : '#templates',
 }))
 </script>
 

@@ -1,25 +1,26 @@
 <script setup lang="ts">
-import type { BlogCategory, BlogCategoryAccent, Product, SiteConfig } from '~/types'
+import type { BlogCategoryAccent, SiteConfig, TemplateIndexCategory, TemplateIndexItem } from '~/types'
 import '~/templates/template-marketplace/template.css'
 
 type MarketplaceCategory = { id: string; name: string; description: string; featured?: boolean }
-
-type MarketplaceProduct = Product & {
-  previewUrl?: string
-  rating?: number
-  reviews?: number
-  authorAvatar?: string
-  featured?: boolean
+type CategoryView = {
+  key: string
+  slug: string
+  label: string
+  description: string
+  accent: BlogCategoryAccent
+  listTitle: string
+  count: number
 }
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   site: SiteConfig
   locale?: string
   defaultLocale?: string
-  categories: BlogCategory[]
-  products: Product[]
-  sections: Array<{ category: BlogCategory; products: Product[] }>
-}>()
+}>(), {
+  locale: 'en',
+  defaultLocale: 'en',
+})
 
 const route = useRoute()
 const p = (path: string) =>
@@ -42,6 +43,8 @@ const copy = computed(() => isZh.value ? {
   all: '全部',
   results: '模板结果',
   noResults: '没有找到匹配模板，请清除筛选或换一个关键词。',
+  loading: '正在加载模板索引...',
+  loadError: '模板索引加载失败，请稍后重试。',
   preview: '预览',
   details: '详情',
   downloads: '下载',
@@ -67,6 +70,8 @@ const copy = computed(() => isZh.value ? {
   all: 'All',
   results: 'Template Results',
   noResults: 'No matching templates. Clear filters or try another keyword.',
+  loading: 'Loading template index...',
+  loadError: 'Failed to load template index. Please try again later.',
   preview: 'Preview',
   details: 'Details',
   downloads: 'downloads',
@@ -90,27 +95,54 @@ const categoryOrder = [
 ]
 const featuredCategorySlugs = categoryOrder.slice(0, 6)
 
-const marketProducts = computed(() => props.products as MarketplaceProduct[])
+const { data: indexData, pending: indexPending, error: indexError } = await useTemplateIndex(computed(() => props.locale || props.defaultLocale || 'en'))
+
+const marketProducts = computed(() => indexData.value?.items ?? [])
+const indexCategories = computed(() => indexData.value?.categories ?? [])
 const categoryRegistry = computed(() => ((props.site as SiteConfig & { marketplaceCategories?: MarketplaceCategory[] }).marketplaceCategories ?? []))
-const toCategoryMeta = (item: MarketplaceCategory, fallback?: BlogCategory): BlogCategory => ({
-  key: fallback?.key || item.id,
-  slug: item.id,
-  label: item.name,
-  description: item.description,
-  accent: (fallback?.accent || 'default') as BlogCategoryAccent,
-  listTitle: fallback?.listTitle || item.name,
+
+const categoryIndex = computed(() => {
+  const map = new Map<string, TemplateIndexCategory>()
+  for (const category of indexCategories.value) {
+    map.set(category.id, category)
+  }
+  return map
 })
-const sortByRegistry = (items: BlogCategory[]) => [...items].sort((a, b) => {
+
+const toCategoryView = (item: MarketplaceCategory): CategoryView => {
+  const indexed = categoryIndex.value.get(item.id)
+  return {
+    key: item.id,
+    slug: item.id,
+    label: item.name || indexed?.label || item.id,
+    description: item.description || indexed?.description || '',
+    accent: 'default',
+    listTitle: item.name || indexed?.label || item.id,
+    count: indexed?.count || 0,
+  }
+}
+
+const sortByRegistry = (items: CategoryView[]) => [...items].sort((a, b) => {
   const aIndex = categoryOrder.indexOf(a.slug)
   const bIndex = categoryOrder.indexOf(b.slug)
   return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex)
 })
+
 const sortedCategories = computed(() => {
   if (categoryRegistry.value.length) {
-    return categoryRegistry.value.map((item) => toCategoryMeta(item, props.categories.find(category => category.slug === item.id)))
+    return sortByRegistry(categoryRegistry.value.map(toCategoryView))
   }
-  return sortByRegistry(props.categories)
+  return sortByRegistry(indexCategories.value.map(category => ({
+    key: category.id,
+    slug: category.id,
+    label: category.label,
+    description: category.description || '',
+    accent: 'default' as BlogCategoryAccent,
+    listTitle: category.label,
+    count: category.count,
+  })))
 })
+
 const featuredCategories = computed(() => {
   if (categoryRegistry.value.length) {
     const featured = categoryRegistry.value.filter(category => category.featured !== false).map(category => category.id)
@@ -118,29 +150,75 @@ const featuredCategories = computed(() => {
   }
   return sortedCategories.value.filter(category => featuredCategorySlugs.includes(category.slug))
 })
-const heroProducts = computed(() => marketProducts.value.filter(product => product.featured).slice(0, 3))
-
-const queryValue = (value: unknown) => Array.isArray(value) ? value[0] : value
-const activeCategory = computed(() => String(queryValue(route.query.category) || ''))
-const activeTags = computed(() => {
-  const raw = queryValue(route.query.tags ?? route.query.tag)
-  if (typeof raw !== 'string' || !raw.trim()) return []
-  return raw.split(',').map(tag => tag.trim()).filter(Boolean)
+const heroProducts = computed(() => {
+  const featured = marketProducts.value.filter(product => product.featured).slice(0, 3)
+  return featured.length ? featured : marketProducts.value.slice(0, 3)
 })
+
+const selectedCategory = ref('')
+const selectedTags = ref<string[]>([])
 const searchInput = ref('')
-const activeSearch = computed(() => String(queryValue(route.query.q) || '').trim())
-
-watch(
-  () => route.query.q,
-  () => {
-    searchInput.value = activeSearch.value
-  },
-  { immediate: true },
-)
-
-const productPath = (product: Product) => p(`/products/${product.categoryMeta?.slug || 'general'}/${product.slug}`)
-const priceLabel = () => '0元'
 const normalize = (value: string) => value.toLowerCase().trim()
+
+const templateHashParams = (hash: string) => {
+  if (!hash.startsWith('#templates')) return new URLSearchParams()
+  const queryStart = hash.indexOf('?')
+  return queryStart >= 0 ? new URLSearchParams(hash.slice(queryStart + 1)) : new URLSearchParams()
+}
+
+const syncFromHash = (hash: string) => {
+  if (!hash.startsWith('#templates')) return
+  const params = templateHashParams(hash)
+  selectedCategory.value = params.get('category') || ''
+  selectedTags.value = (params.get('tags') || '')
+    .split(',')
+    .map(tag => tag.trim())
+    .filter(Boolean)
+  searchInput.value = params.get('q') || ''
+}
+
+watch(() => route.hash, syncFromHash, { immediate: true })
+
+const buildTemplateHash = () => {
+  const params = new URLSearchParams()
+  if (selectedCategory.value) params.set('category', selectedCategory.value)
+  if (selectedTags.value.length) params.set('tags', selectedTags.value.join(','))
+  if (searchInput.value.trim()) params.set('q', searchInput.value.trim())
+  const query = params.toString()
+  return query ? `#templates?${query}` : '#templates'
+}
+
+const updateHash = async () => {
+  await navigateTo({ path: p('/'), hash: buildTemplateHash() })
+}
+
+const setCategory = async (slug: string) => {
+  selectedCategory.value = slug
+  await updateHash()
+}
+
+const toggleTag = async (tag: string) => {
+  const key = normalize(tag)
+  const selected = selectedTags.value.map(normalize)
+  selectedTags.value = selected.includes(key)
+    ? selectedTags.value.filter(item => normalize(item) !== key)
+    : [...selectedTags.value, tag]
+  await updateHash()
+}
+
+const applySearch = async () => {
+  await updateHash()
+}
+
+const clearFilters = async () => {
+  selectedCategory.value = ''
+  selectedTags.value = []
+  searchInput.value = ''
+  await updateHash()
+}
+
+const productPath = (product: TemplateIndexItem) => product.url || p(`/products/${product.category || 'general'}/${product.slug}`)
+const priceLabel = () => '0元'
 
 const categoryIcon = (slug: string) => ({
   'blog-editorial': '▤',
@@ -155,9 +233,8 @@ const categoryIcon = (slug: string) => ({
 
 const categoryCounts = computed(() => {
   const counts: Record<string, number> = {}
-  for (const product of marketProducts.value) {
-    const slug = product.categoryMeta?.slug || ''
-    counts[slug] = (counts[slug] || 0) + 1
+  for (const category of sortedCategories.value) {
+    counts[category.slug] = category.count
   }
   return counts
 })
@@ -179,18 +256,20 @@ const tagCounts = computed(() => {
 })
 
 const filteredProducts = computed(() => {
-  const category = activeCategory.value
-  const tags = activeTags.value.map(normalize)
-  const keyword = normalize(activeSearch.value)
+  const category = selectedCategory.value
+  const tags = selectedTags.value.map(normalize)
+  const keyword = normalize(searchInput.value)
 
   return marketProducts.value.filter((product) => {
-    const categoryMatch = !category || product.categoryMeta?.slug === category
+    const categoryMatch = !category || product.category === category
     const productTags = (product.tags || []).map(normalize)
     const tagsMatch = tags.length === 0 || tags.every(tag => productTags.includes(tag))
     const searchable = [
       product.title,
+      product.name,
       product.description,
-      product.categoryMeta?.label,
+      product.categoryLabel,
+      product.categoryDescription,
       ...(product.tags || []),
     ].filter(Boolean).join(' ').toLowerCase()
     const searchMatch = !keyword || searchable.includes(keyword)
@@ -198,38 +277,8 @@ const filteredProducts = computed(() => {
   })
 })
 
-const queryWith = (updates: Record<string, string | undefined>) => {
-  const query: Record<string, string> = {}
-  for (const [key, value] of Object.entries(route.query)) {
-    const item = Array.isArray(value) ? value[0] : value
-    if (typeof item === 'string' && item) query[key] = item
-  }
-  for (const [key, value] of Object.entries(updates)) {
-    if (value) query[key] = value
-    else delete query[key]
-  }
-  delete query.tag
-  return query
-}
-
 const allTemplatesLink = computed(() => ({ path: p('/'), hash: '#templates' }))
-const categoryLink = (slug: string) => ({ path: p('/'), query: queryWith({ category: slug || undefined }), hash: '#templates' })
-const tagLink = (tag: string) => {
-  const key = normalize(tag)
-  const selected = activeTags.value.map(normalize)
-  const next = selected.includes(key)
-    ? activeTags.value.filter(item => normalize(item) !== key)
-    : [...activeTags.value, tag]
-  return { path: p('/'), query: queryWith({ tags: next.join(',') || undefined }), hash: '#templates' }
-}
-
-const applySearch = async () => {
-  await navigateTo({
-    path: p('/'),
-    query: queryWith({ q: searchInput.value.trim() || undefined }),
-    hash: '#templates',
-  })
-}
+const selectedTagKeys = computed(() => selectedTags.value.map(normalize))
 </script>
 
 <template>
@@ -239,7 +288,7 @@ const applySearch = async () => {
         <h1>{{ copy.heroTitle }}</h1>
         <p>{{ copy.heroDescription }}</p>
         <div class="tm-hero-actions">
-          <NuxtLink :to="{ path: p('/'), hash: '#templates' }" class="tm-button tm-button-primary">▦ {{ copy.browse }}</NuxtLink>
+          <NuxtLink :to="allTemplatesLink" class="tm-button tm-button-primary">▦ {{ copy.browse }}</NuxtLink>
           <NuxtLink :to="allTemplatesLink" class="tm-button tm-button-secondary">{{ copy.freeTemplates }}</NuxtLink>
         </div>
         <div class="tm-trust-row">
@@ -262,25 +311,26 @@ const applySearch = async () => {
           class="tm-floating-preview"
           :class="`is-card-${index + 1}`"
         >
-          <img :src="product.coverImage" :alt="product.title">
+          <img :src="product.coverImage || product.previewImage" :alt="product.title">
         </article>
       </div>
     </section>
 
     <section v-if="featuredCategories.length" class="tm-container tm-category-row" :aria-label="copy.categories">
-      <NuxtLink
+      <button
         v-for="category in featuredCategories"
         :key="category.slug"
-        :to="categoryLink(category.slug)"
+        type="button"
         class="tm-category-card"
-        :class="{ 'is-active': activeCategory === category.slug }"
+        :class="{ 'is-active': selectedCategory === category.slug }"
+        @click="setCategory(category.slug)"
       >
         <span class="tm-category-icon">{{ categoryIcon(category.slug) }}</span>
         <span>
           <strong>{{ category.label }}</strong>
           <small>{{ category.description }}</small>
         </span>
-      </NuxtLink>
+      </button>
     </section>
 
     <section id="templates" class="tm-container tm-section tm-marketplace-section">
@@ -289,7 +339,7 @@ const applySearch = async () => {
           <h2>{{ copy.results }}</h2>
           <p class="tm-section-subtitle">{{ filteredProducts.length }} {{ copy.resultSuffix }}</p>
         </div>
-        <NuxtLink :to="allTemplatesLink" class="tm-text-link">{{ copy.clear }}</NuxtLink>
+        <button type="button" class="tm-text-link tm-link-button" @click="clearFilters">{{ copy.clear }}</button>
       </div>
 
       <div class="tm-marketplace-layout">
@@ -304,48 +354,57 @@ const applySearch = async () => {
 
           <div class="tm-filter-group">
             <h3>{{ copy.allCategories }}</h3>
-            <NuxtLink
-              :to="categoryLink('')"
+            <button
+              type="button"
               class="tm-filter-option"
-              :class="{ 'is-active': !activeCategory }"
+              :class="{ 'is-active': !selectedCategory }"
+              @click="setCategory('')"
             >
               <span>{{ copy.all }}</span>
               <small>{{ marketProducts.length }}</small>
-            </NuxtLink>
-            <NuxtLink
+            </button>
+            <button
               v-for="category in sortedCategories"
               :key="category.slug"
-              :to="categoryLink(category.slug)"
+              type="button"
               class="tm-filter-option"
-              :class="{ 'is-active': activeCategory === category.slug }"
+              :class="{ 'is-active': selectedCategory === category.slug }"
+              @click="setCategory(category.slug)"
             >
               <span>{{ category.label }}</span>
               <small>{{ categoryCounts[category.slug] || 0 }}</small>
-            </NuxtLink>
+            </button>
           </div>
 
           <div class="tm-filter-group">
             <h3>{{ copy.tags }}</h3>
             <div class="tm-filter-tags">
-              <NuxtLink
+              <button
                 v-for="tag in tagCounts"
                 :key="tag.label"
-                :to="tagLink(tag.label)"
+                type="button"
                 class="tm-filter-tag"
-                :class="{ 'is-active': activeTags.map(normalize).includes(normalize(tag.label)) }"
+                :class="{ 'is-active': selectedTagKeys.includes(normalize(tag.label)) }"
+                @click="toggleTag(tag.label)"
               >
                 {{ tag.label }} <small>{{ tag.count }}</small>
-              </NuxtLink>
+              </button>
             </div>
           </div>
         </aside>
 
         <div class="tm-results-panel">
-          <div v-if="filteredProducts.length" class="tm-card-grid">
+          <div v-if="indexPending" class="tm-empty-state">
+            <h3>{{ copy.loading }}</h3>
+          </div>
+          <div v-else-if="indexError" class="tm-empty-state">
+            <h3>{{ copy.loadError }}</h3>
+          </div>
+          <div v-else-if="filteredProducts.length" class="tm-card-grid">
             <article v-for="product in filteredProducts" :key="product.slug" class="tm-template-card">
               <NuxtLink :to="productPath(product)" class="tm-card-media">
                 <span class="tm-price-badge">{{ priceLabel() }}</span>
-                <img :src="product.coverImage" :alt="product.title">
+                <img :src="product.coverImage || product.previewImage" :alt="product.title">
               </NuxtLink>
               <div class="tm-card-body">
                 <h3><NuxtLink :to="productPath(product)">{{ product.title }}</NuxtLink></h3>
@@ -377,7 +436,7 @@ const applySearch = async () => {
           </div>
           <div v-else class="tm-empty-state">
             <h3>{{ copy.noResults }}</h3>
-            <NuxtLink :to="allTemplatesLink" class="tm-button tm-button-primary">{{ copy.clear }}</NuxtLink>
+            <button type="button" class="tm-button tm-button-primary" @click="clearFilters">{{ copy.clear }}</button>
           </div>
         </div>
       </div>
@@ -391,7 +450,7 @@ const applySearch = async () => {
       </div>
       <div class="tm-creator-actions">
         <NuxtLink :to="allTemplatesLink" class="tm-button tm-button-secondary">{{ copy.learnMore }}</NuxtLink>
-        <NuxtLink :to="allTemplatesLink" class="tm-button tm-button-primary">{{ copy.creatorCta }}</NuxtLink>
+        <button type="button" class="tm-button tm-button-primary" @click="clearFilters">{{ copy.creatorCta }}</button>
       </div>
       <div class="tm-creator-proof">
         <div class="tm-avatar-stack" aria-hidden="true">

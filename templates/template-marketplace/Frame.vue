@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type { BlogCategory, BlogCategoryAccent, SiteConfig } from '~/types'
+import type { SiteConfig } from '~/types'
 import { DEFAULT_LOCALE, stripLocalePrefixFromPath } from '~/lib/i18n'
-import { fetchProductCategories } from '~/composables/useContentData'
 import LanguageSelect from '~/templates/template-marketplace/components/LanguageSelect.vue'
 import '~/templates/template-marketplace/template.css'
 
@@ -21,11 +20,7 @@ const headerSearch = ref('')
 const p = (path: string) =>
   currentLocale.value && currentLocale.value !== DEFAULT_LOCALE ? `/${currentLocale.value}${path}` : path
 
-const { data: categoriesData } = await useAsyncData<BlogCategory[]>(
-  () => `frame-products:${currentLocale.value}:categories`,
-  () => fetchProductCategories(currentLocale.value),
-  { watch: [currentLocale] },
-)
+const localizeTo = (to: string) => to.startsWith('/') ? p(to) : to
 
 type MarketplaceCategory = { id: string; name: string; description: string; featured?: boolean }
 const categoryOrder = [
@@ -40,59 +35,53 @@ const categoryOrder = [
 ]
 
 const categoryRegistry = computed(() => ((props.site as SiteConfig & { marketplaceCategories?: MarketplaceCategory[] }).marketplaceCategories ?? []))
-const toCategoryMeta = (item: MarketplaceCategory, fallback?: BlogCategory): BlogCategory => ({
-  key: fallback?.key || item.id,
-  slug: item.id,
-  label: item.name,
-  description: item.description,
-  accent: (fallback?.accent || 'default') as BlogCategoryAccent,
-  listTitle: fallback?.listTitle || item.name,
-})
-const sortByRegistry = (items: BlogCategory[]) => [...items].sort((a, b) => {
-  const aIndex = categoryOrder.indexOf(a.slug)
-  const bIndex = categoryOrder.indexOf(b.slug)
+const categories = computed(() => [...categoryRegistry.value].sort((a, b) => {
+  const aIndex = categoryOrder.indexOf(a.id)
+  const bIndex = categoryOrder.indexOf(b.id)
   return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex)
-})
-const categories = computed(() => {
-  const fetched = categoriesData.value ?? []
-  if (categoryRegistry.value.length) {
-    return categoryRegistry.value.map((item) => toCategoryMeta(item, fetched.find(category => category.slug === item.id)))
-  }
-  return sortByRegistry(fetched)
-})
+}))
 
-const browseItem = computed(() => props.site.nav?.[0] ?? { label: isZh.value ? '浏览' : 'Browse', to: p('/') })
-const freeTemplatesItem = computed(() => props.site.nav?.[1] ?? { label: isZh.value ? '免费模板' : 'Free Templates', to: p('/#templates') })
+const browseItem = computed(() => props.site.nav?.[0] ?? { label: isZh.value ? '浏览' : 'Browse', to: '/' })
+const freeTemplatesItem = computed(() => props.site.nav?.[1] ?? { label: isZh.value ? '免费模板' : 'Free Templates', to: '/#templates' })
+const browseLink = computed(() => localizeTo(browseItem.value.to || '/'))
+const freeTemplatesLink = computed(() => localizeTo(freeTemplatesItem.value.to || '/#templates'))
 const categoriesLabel = computed(() => isZh.value ? '分类' : 'Categories')
 const searchPlaceholder = computed(() => props.site.tagline || (isZh.value ? '搜索模板...' : 'Search templates...'))
 
+const templateHashParams = (hash: string) => {
+  if (!hash.startsWith('#templates')) return new URLSearchParams()
+  const queryStart = hash.indexOf('?')
+  return queryStart >= 0 ? new URLSearchParams(hash.slice(queryStart + 1)) : new URLSearchParams()
+}
+
+const buildTemplateHash = (updates: Record<string, string | undefined>) => {
+  const params = templateHashParams(route.hash)
+  for (const [key, value] of Object.entries(updates)) {
+    if (value) params.set(key, value)
+    else params.delete(key)
+  }
+  params.delete('tag')
+  const query = params.toString()
+  return query ? `#templates?${query}` : '#templates'
+}
+
 watch(
-  () => route.query.q,
-  (value) => {
-    headerSearch.value = typeof value === 'string' ? value : ''
+  () => route.hash,
+  (hash) => {
+    headerSearch.value = templateHashParams(hash).get('q') || ''
   },
   { immediate: true },
 )
 
-const categoryLink = (category: BlogCategory) => ({
+const categoryLink = (category: MarketplaceCategory) => ({
   path: p('/'),
-  query: { category: category.slug },
-  hash: '#templates',
+  hash: `#templates?category=${encodeURIComponent(category.id)}`,
 })
 
 const applyHeaderSearch = async () => {
-  const query = { ...route.query }
-  const term = headerSearch.value.trim()
-  if (term) {
-    query.q = term
-  } else {
-    delete query.q
-  }
-
   await navigateTo({
     path: p('/'),
-    query,
-    hash: '#templates',
+    hash: buildTemplateHash({ q: headerSearch.value.trim() || undefined }),
   })
 }
 </script>
@@ -107,7 +96,7 @@ const applyHeaderSearch = async () => {
         </NuxtLink>
 
         <nav class="tm-nav" aria-label="Primary navigation">
-          <NuxtLink :to="browseItem.to">
+          <NuxtLink :to="browseLink">
             {{ browseItem.label }}
           </NuxtLink>
 
@@ -118,16 +107,16 @@ const applyHeaderSearch = async () => {
             <div class="tm-category-menu-panel">
               <NuxtLink
                 v-for="category in categories"
-                :key="category.slug"
+                :key="category.id"
                 :to="categoryLink(category)"
               >
-                <strong>{{ category.label }}</strong>
+                <strong>{{ category.name }}</strong>
                 <small>{{ category.description }}</small>
               </NuxtLink>
             </div>
           </div>
 
-          <NuxtLink :to="freeTemplatesItem.to">
+          <NuxtLink :to="freeTemplatesLink">
             {{ freeTemplatesItem.label }}
           </NuxtLink>
         </nav>
